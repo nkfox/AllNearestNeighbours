@@ -20,6 +20,13 @@ public class VoronoiEdge {
         this.endVertex = endVertex;
         this.leftSide = leftSide;
         this.rightSide = rightSide;
+        /*if (polarAngle(beginVertex, leftSide) > polarAngle(beginVertex, endVertex)) {
+            this.leftSide = leftSide;
+            this.rightSide = rightSide;
+        } else {
+            this.leftSide = rightSide;
+            this.rightSide = leftSide;
+        }*/
         this.reverse = new VoronoiEdge(endVertex, beginVertex, rightSide, leftSide, this);
     }
 
@@ -34,19 +41,38 @@ public class VoronoiEdge {
     static VoronoiEdge getPerpendicularEdge(VoronoiPoint p1, VoronoiPoint p2) {
         Line line = new Line(p1, p2, true);
         Point middle = new VoronoiPoint((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
-        Point begin = new Point(0, 0), end = new Point(PointsPanel.WIDTH, PointsPanel.HEIGHT);
+        double max = PointsPanel.MAX;
+        Point begin = new Point(-max, -max), end = new Point(max, max);
         findNewPoint(line, PointsPanel.up, middle, begin, end);
         findNewPoint(line, PointsPanel.down, middle, begin, end);
         findNewPoint(line, PointsPanel.left, middle, begin, end);
         findNewPoint(line, PointsPanel.right, middle, begin, end);
 
-        if (p1.compareTo(p2) < 0)
+        //if (p1.compareTo(p2) < 0)
+        if (polarAngle(begin, p1) > polarAngle(begin, end))
             return new VoronoiEdge(begin, end, p1, p2);
         else return new VoronoiEdge(begin, end, p2, p1);
     }
 
     private static void findNewPoint(Line line1, Line line2, Point middle, Point left, Point right) {
         Point point = line1.intersection(line2);
+        double max = PointsPanel.MAX;
+        if (point.x > max) {
+            point.x = max;
+            point.y = line1.findY(point.x);
+        }
+        if (point.y > max) {
+            point.y = max;
+            point.x = line1.findX(point.y);
+        }
+        if (point.x < -max) {
+            point.x = -max;
+            point.y = line1.findY(point.x);
+        }
+        if (point.y < -max) {
+            point.y = -max;
+            point.x = line1.findX(point.y);
+        }
         if (point != null) {
             if (point.x < middle.x || point.x == middle.x && point.y < middle.y) {
                 if (middle.distanceTo(left) > middle.distanceTo(point)) {
@@ -62,26 +88,39 @@ public class VoronoiEdge {
         }
     }
 
-    public boolean isLowerThan(VoronoiEdge edge){
-        if(this.beginVertex.equals(edge.beginVertex)){
-            if(Math.abs(this.beginVertex.x-this.endVertex.x)> Math.abs(edge.beginVertex.x-edge.endVertex.x)){
-                Line line = new Line(beginVertex,endVertex,false);
-                int y = line.findY(edge.endVertex.x);
-                return y<edge.endVertex.y;
-            } else{
-                Line line = new Line(edge.beginVertex,edge.endVertex,false);
-                int y = line.findY(endVertex.x);
-                return y>endVertex.y;
+    public static double polarAngle(Point center, Point p) {
+        double alpha = Math.atan2(p.y - center.y, p.x - center.x);
+        if (alpha < 0) alpha += 2 * Math.PI;
+        return alpha;
+    }
+
+    public boolean isLowerThan(VoronoiEdge edge) {
+        if (this.beginVertex.equals(edge.beginVertex)) {
+            if (Math.abs(this.beginVertex.x - this.endVertex.x) > Math.abs(edge.beginVertex.x - edge.endVertex.x)) {
+                Line line = new Line(beginVertex, endVertex, false);
+                double y = line.findY(edge.endVertex.x);
+                return y < edge.endVertex.y;
+            } else {
+                Line line = new Line(edge.beginVertex, edge.endVertex, false);
+                double y = line.findY(endVertex.x);
+                return y > endVertex.y;
             }
         }
-        if(Math.abs(this.beginVertex.x-this.endVertex.x)> Math.abs(edge.beginVertex.x-edge.endVertex.x)){
-            Line line = new Line(beginVertex,endVertex,false);
-            int y = line.findY(edge.beginVertex.x);
-            return y<edge.beginVertex.y;
-        } else{
-            Line line = new Line(edge.beginVertex,edge.endVertex,false);
-            int y = line.findY(beginVertex.x);
-            return y>beginVertex.y;
+        if (Math.abs(this.beginVertex.x - this.endVertex.x) > Math.abs(edge.beginVertex.x - edge.endVertex.x)) {
+            Line line = new Line(beginVertex, endVertex, false);
+            double y = line.findY(edge.beginVertex.x);
+            return y < edge.beginVertex.y;
+        } else {
+            Line line = new Line(edge.beginVertex, edge.endVertex, false);
+            double y = line.findY(beginVertex.x);
+            return y > beginVertex.y;
         }
+    }
+
+    @Override
+    public boolean equals(Object edge) {
+        if (edge instanceof VoronoiEdge)
+            return ((VoronoiEdge) edge).beginVertex.equals(beginVertex) && ((VoronoiEdge) edge).endVertex.equals(endVertex);
+        return false;
     }
 }

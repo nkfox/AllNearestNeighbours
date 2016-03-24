@@ -7,7 +7,7 @@ public class VoronoiPoint extends Point  {
 
     VoronoiEdge firstEdge;
 
-    public VoronoiPoint(int x,int y){
+    public VoronoiPoint(double x,double y){
         super(x,y);
     }
 

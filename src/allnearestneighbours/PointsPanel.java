@@ -17,17 +17,19 @@ import javax.swing.Timer;
 public class PointsPanel extends JPanel {
 
     public static final int WIDTH = 600, HEIGHT = 400;
-    public static final Line up = new Line(0, HEIGHT, WIDTH, HEIGHT);
-    public static final Line down = new Line(0, 0, WIDTH, 0);
-    public static final Line left = new Line(0, 0, 0, HEIGHT);
-    public static final Line right = new Line(WIDTH, 0, WIDTH, HEIGHT);
+
+    public static double MAX = 1000000;
+    public static final Line up = new Line(-MAX , MAX , MAX , MAX );
+    public static final Line down = new Line(-MAX , -MAX , MAX , -MAX );
+    public static final Line left = new Line(-MAX , -MAX , -MAX , MAX );
+    public static final Line right = new Line(MAX , -MAX , MAX , MAX);
+
     private List<Point> points;
-    private List<VoronoiPoint> convexHull;
+    private VoronoiDiagram diagram;
 
     public PointsPanel(List<Point> points) {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.points = points;
-        convexHull = new ArrayList<>();
     }
 
     public void paintComponent(Graphics page) {
@@ -35,16 +37,41 @@ public class PointsPanel extends JPanel {
         for (Point point : points) {
             point.update(page);
         }
+
+        page.setColor(new Color(333333333));
+        printConvexHull(page);
+
         page.setColor(new Color(0));
-        System.out.println(convexHull.size());
-        for(int i=0;i<convexHull.size()-1;i++)
-            page.drawLine(convexHull.get(i).x,convexHull.get(i).y,convexHull.get(i+1).x,convexHull.get(i+1).y);
+        printDiagram(page);
+    }
+
+    private void printConvexHull(Graphics page) {
+        int i;
+        System.out.println( diagram.convexHull.size());
+        for (i = 0; i < diagram.convexHull.size() - 1; i++) {
+            page.drawLine((int) diagram.convexHull.get(i).x,HEIGHT- (int) diagram.convexHull.get(i).y,
+                    (int) diagram.convexHull.get(i + 1).x, HEIGHT-(int) diagram.convexHull.get(i + 1).y);
+            System.out.println( diagram.convexHull.size());
+        }
+        page.drawLine((int) diagram.convexHull.get(i).x,HEIGHT- (int) diagram.convexHull.get(i).y,
+                (int) diagram.convexHull.get(0).x,HEIGHT- (int) diagram.convexHull.get(0).y);
 
     }
 
-    public void setConvexHull(List<VoronoiPoint> convexHull) {
-        this.convexHull = convexHull;
-        if (convexHull.size() > 0)
-            convexHull.add(convexHull.get(0));
+    private void printDiagram(Graphics page) {
+        for (VoronoiPoint point : diagram.points) {
+            VoronoiEdge current = point.firstEdge;
+            if (current != null)
+                do {
+                    System.out.println(current.beginVertex.x + " " + current.beginVertex.y + " " + current.endVertex.x + " " + current.endVertex.y);
+                    page.drawLine((int) current.beginVertex.x, HEIGHT-(int) current.beginVertex.y, (int) current.endVertex.x, HEIGHT-(int) current.endVertex.y);
+                    current = current.clockwise;
+                } while (current != null && !current.equals(point.firstEdge));
+            System.out.println("\n");
+        }
+    }
+
+    public void setDiagram(VoronoiDiagram diagram) {
+        this.diagram = diagram;
     }
 }

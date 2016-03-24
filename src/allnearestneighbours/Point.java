@@ -7,19 +7,19 @@ import java.util.Random;
  * Created by Nataliia Kozoriz on 19.03.2016.
  */
 public class Point implements Comparable<Point> {
-    int x;
-    int y;
+    double x;
+    double y;
     Point nearestNeighbour;
 
-    public Point(int x, int y) {
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
         nearestNeighbour = null;
     }
 
     public Point() {
-        this.x = (int) (Math.random() * PointsPanel.WIDTH);
-        this.y = (int) (Math.random() * PointsPanel.HEIGHT);
+        this.x = Math.random() * PointsPanel.WIDTH;
+        this.y = Math.random() * PointsPanel.HEIGHT;
     }
 
     public int compareTo(Point point) {
@@ -56,7 +56,7 @@ public class Point implements Comparable<Point> {
 
     public void draw(Graphics page) {
         page.setColor(color);
-        page.fillOval(x - 3, y - 3, 6, 6);
+        page.fillOval((int)x - 3, PointsPanel.HEIGHT-(int)y - 3, 6, 6);
         //page.drawLine(x, y, nearestNeighbour.x, nearestNeighbour.y);
     }
 
@@ -70,4 +70,6 @@ public class Point implements Comparable<Point> {
             return x == ((Point) point).x && y == ((Point) point).y;
         return false;
     }
+
+
 }
