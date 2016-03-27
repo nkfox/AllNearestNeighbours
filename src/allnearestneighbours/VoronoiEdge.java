@@ -48,7 +48,6 @@ public class VoronoiEdge {
         findNewPoint(line, PointsPanel.left, middle, begin, end);
         findNewPoint(line, PointsPanel.right, middle, begin, end);
 
-        //if (p1.compareTo(p2) < 0)
         if (polarAngle(begin, p1) > polarAngle(begin, end))
             return new VoronoiEdge(begin, end, p1, p2);
         else return new VoronoiEdge(begin, end, p2, p1);
@@ -56,24 +55,24 @@ public class VoronoiEdge {
 
     private static void findNewPoint(Line line1, Line line2, Point middle, Point left, Point right) {
         Point point = line1.intersection(line2);
-        double max = PointsPanel.MAX;
-        if (point.x > max) {
-            point.x = max;
-            point.y = line1.findY(point.x);
-        }
-        if (point.y > max) {
-            point.y = max;
-            point.x = line1.findX(point.y);
-        }
-        if (point.x < -max) {
-            point.x = -max;
-            point.y = line1.findY(point.x);
-        }
-        if (point.y < -max) {
-            point.y = -max;
-            point.x = line1.findX(point.y);
-        }
         if (point != null) {
+            double max = PointsPanel.MAX;
+            if (point.x > max) {
+                point.x = max;
+                point.y = line1.findY(point.x);
+            }
+            if (point.y > max) {
+                point.y = max;
+                point.x = line1.findX(point.y);
+            }
+            if (point.x < -max) {
+                point.x = -max;
+                point.y = line1.findY(point.x);
+            }
+            if (point.y < -max) {
+                point.y = -max;
+                point.x = line1.findX(point.y);
+            }
             if (point.x < middle.x || point.x == middle.x && point.y < middle.y) {
                 if (middle.distanceTo(left) > middle.distanceTo(point)) {
                     left.x = point.x;
@@ -119,8 +118,6 @@ public class VoronoiEdge {
 
     @Override
     public boolean equals(Object edge) {
-        if (edge instanceof VoronoiEdge)
-            return ((VoronoiEdge) edge).beginVertex.equals(beginVertex) && ((VoronoiEdge) edge).endVertex.equals(endVertex);
-        return false;
+        return edge instanceof VoronoiEdge && ((VoronoiEdge) edge).beginVertex.equals(beginVertex) && ((VoronoiEdge) edge).endVertex.equals(endVertex);
     }
 }

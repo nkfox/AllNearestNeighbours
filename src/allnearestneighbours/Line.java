@@ -33,9 +33,10 @@ public class Line {
     public Point intersection(Line line){
         if (b*line.d == d*line.b)
             return null;
-        if(b == 0)
+        double eps = 0.0000001;
+        if(Math.abs(b) < eps)
             return new Point(a,line.findY(a));
-        if (line.b==0)
+        if (Math.abs(line.b) < eps)
             return new Point(line.a,findY(line.a));
         double x = (a*d/b-c-line.d*line.a/line.b+line.c)/(d/b-line.d/line.b);
         double y = findY(x);
@@ -43,23 +44,19 @@ public class Line {
     }
 
     public double findY(double x){
-        return (x-a+0.0)*d/b+c;
+        return (x-a)*d/b+c;
     }
 
     public double findX(double y){
-        return (y-c+0.0)*b/d+a;
+        return (y-c)*b/d+a;
     }
 
     public boolean intersects(VoronoiEdge edge){
-        /*if (edge.beginVertex.y> edge.endVertex.y)
-            edge=edge.reverse;*/
         double yLeft = findY(edge.beginVertex.x);
         double yRight = findY(edge.endVertex.x);
-        /*if (yLeft > yRight){
-            int temp = yLeft;
-            yLeft = yRight;
-            yRight = temp;
-        }*/
+        Point point = intersection(new Line(edge.beginVertex,edge.endVertex,false));
+        System.out.println("intersection");
+        point.print();
         return (edge.beginVertex.y-yLeft)*(edge.endVertex.y-yRight)<=0;
     }
 }

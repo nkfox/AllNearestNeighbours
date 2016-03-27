@@ -18,7 +18,7 @@ public class PointsPanel extends JPanel {
 
     public static final int WIDTH = 600, HEIGHT = 400;
 
-    public static double MAX = 1000000;
+    public static double MAX = 1000000000;
     public static final Line up = new Line(-MAX , MAX , MAX , MAX );
     public static final Line down = new Line(-MAX , -MAX , MAX , -MAX );
     public static final Line left = new Line(-MAX , -MAX , -MAX , MAX );
