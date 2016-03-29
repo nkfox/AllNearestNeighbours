@@ -2,6 +2,7 @@ package allnearestneighbours;
 
 /**
  * Created by Nataliia Kozoriz on 19.03.2016.
+ * Voronoi edge connect two voronoi vertex
  */
 public class VoronoiEdge {
 

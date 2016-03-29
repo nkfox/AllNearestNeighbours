@@ -5,6 +5,7 @@ import java.util.Random;
 
 /**
  * Created by Nataliia Kozoriz on 19.03.2016.
+ * All info about point
  */
 public class Point implements Comparable<Point> {
     double x;
@@ -66,9 +67,7 @@ public class Point implements Comparable<Point> {
 
     @Override
     public boolean equals(Object point) {
-        if (point instanceof Point)
-            return x == ((Point) point).x && y == ((Point) point).y;
-        return false;
+        return point instanceof Point && x == ((Point) point).x && y == ((Point) point).y;
     }
 
 

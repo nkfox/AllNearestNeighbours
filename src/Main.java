@@ -1,4 +1,7 @@
-import allnearestneighbours.*;
+import allnearestneighbours.Point;
+import allnearestneighbours.PointsPanel;
+import allnearestneighbours.VoronoiDiagram;
+import allnearestneighbours.VoronoiPoint;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -8,66 +11,156 @@ import java.util.stream.Collectors;
 
 /**
  * Created by Nataliia Kozoriz on 19.03.2016.
- *
+ * Main
  */
 public class Main {
 
     static List<Point> points;
 
-    public static void getRandomPoints(int n){
+    public static void getRandomPoints(int n) {
         points = new ArrayList<>();
-        /*while(n-->0){
+        while(n-->0){
             Point point = new Point();
             point.print();
             points.add(point);
-        }*/
+        }
 
         /*points.add(new Point(50,150));
         points.add(new Point(100,100));
         points.add(new Point(100,200));
         points.add(new Point(150,150));*/
 
-        /*// worked
-        points.add(new Point(14.387708063040927,257.50095740058134));
-        points.add(new Point(262.8715036214173,152.13450244280767));
-        points.add(new Point(290.6051400239267,330.1350815030661));
-        points.add(new Point(546.0364444369347,36.71177204163576));
-        points.add(new Point(588.2094851002904,304.4107512161108));*/
+        /*//ok
+        points.add(new Point(83.02382472734023,302.3972688413379));
+        points.add(new Point(217.29757168920074,271.9796315018999));
+        points.add(new Point(303.0322488571952,127.28579802818949));
+        points.add(new Point(416.4147690849933,284.4969709688983));
+        points.add(new Point(490.0263161424196,137.63432698355564));*/
 
-       /* //three points on one line
+        /*// worked
+        points.add(new Point(14.387708063040927, 257.50095740058134));
+        points.add(new Point(262.8715036214173, 152.13450244280767));
+        points.add(new Point(290.6051400239267, 330.1350815030661));
+        points.add(new Point(546.0364444369347, 36.71177204163576));
+        points.add(new Point(588.2094851002904, 304.4107512161108));*/
+
+        /*//three points on one line - ok
         points.add(new Point(536.9823347276437,123.02802995020201));
         points.add(new Point(534.9551920464446,342.0229870734802));
         points.add(new Point(12.917193875781319,295.08003193035495));
         points.add(new Point(336.8117597512865,273.4084051779495));
         points.add(new Point(541.0527508505194,19.113295730066106));*/
 
+        /*//ok
         points.add(new Point(35.921312251015095,197.7140353426867));
         points.add(new Point(39.17465602202921,58.127030891360846));
         points.add(new Point(170.42553832241137,63.10318960613177));
         points.add(new Point(438.65639843058534,184.0539107361582));
-        points.add(new Point(516.3257649046346,11.254652433007095));
+        points.add(new Point(516.3257649046346,11.254652433007095));*/
 
-       /* points.add(new Point(296,282));
+        /*//ok
+        points.add(new Point(296,282));
         points.add(new Point(342,17));
         points.add(new Point(357,139));
         points.add(new Point(388,43));
         points.add(new Point(516,156));*/
+
+        /*(14.982517269855911,351.23644655886596)
+(394.24543687506923,382.3032498799284)
+(265.2962837284361,74.1544854566632)
+(362.6436794142559,359.98123216588357)
+(14.77650618704609,170.40547240475354)
+(545.6851817536674,26.956352956098904)
+(110.37247399722818,78.18705342586823)
+(118.066688632899,7.491092840481706)
+(204.6976038617002,185.59277994757295)
+(321.68875856578194,132.18606867766698)
+(376.68493881918783,170.35641732167096)
+(555.7791704158228,265.5701546442274)
+(385.30531056033146,80.73269105772418)
+(360.3785808203666,73.92981338405056)
+(330.02356727278124,321.05224901930285)
+(434.73503790456994,147.8920026894539)
+(138.34812044883472,173.06649496589168)
+(475.70866281489407,143.1028132012617)
+(291.25864514753164,14.27608244393479)
+(108.59256390849208,313.67234612088527)*/
+
+        /*(509.8719041437596,179.35442571702228)
+(304.0295828659948,269.7469817782013)
+(227.69854480440287,305.63299186796354)
+(337.7593229005318,392.92672682569724)
+(69.65203457317625,310.2761984082499)
+(141.22518547275382,369.1880560546885)
+(88.18401667872844,170.2576212971057)
+(161.42137289211905,258.17040283174003)
+(244.3147996193988,337.4750195971896)
+(334.9440421510318,317.84890653068356)
+(107.36588628479456,238.64085644277583)
+(62.69485105220636,36.08018198146259)
+(121.77161011561661,152.14611194928108)
+(35.522673173791944,62.39420415829744)
+(407.46737912197415,272.9936383781763)
+(167.8286677395693,88.04242308792438)
+(314.84481867815157,391.35038780113314)
+(72.5270917305552,268.01558859377946)
+(3.5058080942536263,387.2208734494925)
+(380.871335834407,86.94779701748784)*/
+
+        /*(410.2003075635034,213.74498701421007)
+(341.28458100051546,279.3857208964915)
+(326.3551757841318,203.36338882846655)
+(407.1709212089757,64.76595287734388)
+(353.24702748225985,73.43378601690085)
+(248.01580712317485,315.7473530148373)
+(416.0474639492418,121.44219101773905)
+(563.0922333313273,213.64298630171973)
+(290.93534234928114,180.60418015499624)
+(490.2025318929198,310.52678098401236)
+(586.5890927845219,279.4310503736017)
+(34.15734562237647,1.7927736160943564)
+(112.38147821458395,76.13776492888849)
+(324.9105262514368,220.9254842146828)
+(435.34603585833645,343.9789865881232)
+(460.83724788563285,271.8255352382044)
+(514.5076129178965,40.2402437012801)
+(413.5405820338701,376.92554004107876)
+(6.443105869609189,60.75198944656477)
+(510.2206921700971,94.72158537893618)*/
+
+        /*(469.465057389084,321.633132666541)
+(241.7878199003624,356.8158447038222)
+(408.2769005216647,62.97690696503104)
+(396.13823893624425,396.63970773162356)
+(14.566490729307159,258.3657683987185)
+(532.3905813112844,112.21050349621451)
+(321.65513725249207,121.71642621596791)
+(565.8436171452922,237.121774242812)
+(57.97772743516949,66.84053212818033)
+(229.845374833902,91.42999419965166)
+(81.57797065742042,202.470200202309)
+(452.5532471285509,300.5510177401114)
+(281.3523967141917,350.6633019915214)
+(244.8367241768943,310.7359737402554)
+(204.28970996878937,317.116588403787)
+(389.33121967883636,82.97461119112634)
+(146.66344460592913,51.67995963084402)
+(208.7373550907074,313.1899331872262)
+(94.59640256918114,59.630968442430145)
+(148.29634249371702,105.10351671481062)*/
     }
 
-    public static void getNearestNeighboursBruteForce(){
-        for (Point point: points){
-            for(Point otherPoint: points){
-                if (point!=otherPoint && point.distanceTo(otherPoint)<point.distanceTo(point.getNearestNeighbour())){
-                    point.setNearestNeighbour(otherPoint);
-                }
-            }
+    public static void getNearestNeighboursBruteForce() {
+        for (Point point : points) {
+            points.stream().filter(otherPoint -> point != otherPoint && point.distanceTo(otherPoint) <
+                    point.distanceTo(point.getNearestNeighbour())).forEach(point::setNearestNeighbour);
             //point.printNeighbour();
         }
     }
 
-    public static PointsPanel printNeighbours(){
+    public static PointsPanel printNeighbours() {
         JFrame circlesFrame = new JFrame("Points");
-        circlesFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        circlesFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         PointsPanel panel = new PointsPanel(points);
         circlesFrame.getContentPane().add(panel);
         circlesFrame.pack();
@@ -76,11 +169,11 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        getRandomPoints(5);
+        getRandomPoints(30);
 
         //System.out.println("\n");
         getNearestNeighboursBruteForce();
-        PointsPanel panel =  printNeighbours();
+        PointsPanel panel = printNeighbours();
 
         Collections.sort(points);
         List<VoronoiPoint> voronoiPoints = points.stream().map(VoronoiPoint::new).collect(Collectors.toList());
@@ -88,6 +181,7 @@ public class Main {
         VoronoiDiagram voronoiDiagram = new VoronoiDiagram(voronoiPoints);
         System.out.println(7);
         panel.setDiagram(voronoiDiagram);
+        System.out.println("Diagram finished");
 
         //VoronoiDiagram v = new VoronoiDiagram(voronoiPoints);
 

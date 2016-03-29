@@ -2,6 +2,7 @@ package allnearestneighbours;
 
 /**
  * Created by Nataliia Kozoriz on 19.03.2016.
+ * All work with lines
  */
 public class Line {
 
@@ -54,9 +55,9 @@ public class Line {
     public boolean intersects(VoronoiEdge edge){
         double yLeft = findY(edge.beginVertex.x);
         double yRight = findY(edge.endVertex.x);
-        Point point = intersection(new Line(edge.beginVertex,edge.endVertex,false));
+        /*Point point = intersection(new Line(edge.beginVertex,edge.endVertex,false));
         System.out.println("intersection");
-        point.print();
+        point.print();*/
         return (edge.beginVertex.y-yLeft)*(edge.endVertex.y-yRight)<=0;
     }
 }
