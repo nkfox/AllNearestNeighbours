@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class PointsPanel extends JPanel {
 
-    public static final int WIDTH = 600, HEIGHT = 400;
+    public static final int WIDTH = 1300, HEIGHT = 600;
 
     public static double MAX = 10000000;
     public static final Line up = new Line(-MAX, MAX, MAX, MAX);
@@ -28,17 +28,14 @@ public class PointsPanel extends JPanel {
 
     public void paintComponent(Graphics page) {
         super.paintComponent(page);
-        for (Point point : points) {
+        for (Point point : points)
             point.draw(page);
-        }
 
         page.setColor(new Color(333333333));
         printConvexHull(page);
 
         page.setColor(new Color(0));
         printDiagram(page);
-
-        System.out.println("painting finished");
     }
 
     private void printConvexHull(Graphics page) {
@@ -55,12 +52,13 @@ public class PointsPanel extends JPanel {
     private void printDiagram(Graphics page) {
         for (VoronoiPoint point : diagram.points) {
             VoronoiEdge current = point.firstEdge;
+            int i=20;
             if (current != null)
                 do {
                     //System.out.println(current.beginVertex.x + " " + current.beginVertex.y + " " + current.endVertex.x + " " + current.endVertex.y);
                     page.drawLine((int) current.beginVertex.x, HEIGHT - (int) current.beginVertex.y, (int) current.endVertex.x, HEIGHT - (int) current.endVertex.y);
                     current = current.clockwise;
-                } while (current != null && !current.equals(point.firstEdge));
+                } while (current != null && !current.equals(point.firstEdge) && i-->0);
             //System.out.println("\n");
         }
     }
