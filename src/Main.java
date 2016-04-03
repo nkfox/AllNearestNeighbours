@@ -19,16 +19,24 @@ public class Main {
 
     public static void getRandomPoints(int n) {
         points = new ArrayList<>();
-        /*while(n-->0){
+        while (n-- > 0) {
             Point point = new Point();
             //point.print();
-            points.add(point);
-        }*/
+            boolean ok = true;
+            for (Point p : points)
+                if (point.distanceTo(p) < 0.01)
+                    ok = false;
+            if (ok)
+                points.add(point);
+            else n++;
+        }
 
-        points.add(new Point(50,150));
+        /*//points.add(new Point(100+50*Math.sin(Math.PI*5/6),150+50*Math.cos(Math.PI*5/6)));
+        points.add(new Point(100+50*Math.cos(Math.PI/6),150+50*Math.sin(Math.PI/6)));
         points.add(new Point(100,100));
         points.add(new Point(100,200));
         points.add(new Point(150,150));
+        points.add(new Point(100+50*Math.sin(Math.PI/4),150+50*Math.cos(Math.PI/4)));*/
 
         /*//one edge intersected twice
         points.add(new Point(83.02382472734023,302.3972688413379));
@@ -102,15 +110,18 @@ public class Main {
         points.add(new Point(589.0632394157781,51.00255842586052));*/
 
 
-
     }
 
     public static void getNearestNeighboursBruteForce() {
+        long startTime = System.nanoTime();
         for (Point point : points) {
             points.stream().filter(otherPoint -> point != otherPoint && point.distanceTo(otherPoint) <
                     point.distanceTo(point.getNearestNeighbour())).forEach(point::setNearestNeighbour);
             //point.printNeighbour();
         }
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        System.out.println(duration / 1000000000.0 + " seconds");
     }
 
     public static PointsPanel printNeighbours() {
@@ -125,15 +136,21 @@ public class Main {
 
     public static void main(String[] args) {
 
-        getRandomPoints(10);
+        getRandomPoints(5000);
 
         getNearestNeighboursBruteForce();
         PointsPanel panel = printNeighbours();
 
+        long startTime = System.nanoTime();
         Collections.sort(points);
         List<VoronoiPoint> voronoiPoints = points.stream().map(VoronoiPoint::new).collect(Collectors.toList());
-        System.out.println("Points sorted");
+        //System.out.println("Points sorted");
         VoronoiDiagram voronoiDiagram = new VoronoiDiagram(voronoiPoints);
+
+        long endTime = System.nanoTime();
+        long duration = (endTime - startTime);
+        System.out.println(duration / 1000000000.0 + " seconds");
+
         System.out.println("Diagram finished");
         panel.setDiagram(voronoiDiagram);
         System.out.println("Painting finished");

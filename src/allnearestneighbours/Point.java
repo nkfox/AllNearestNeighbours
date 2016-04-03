@@ -24,7 +24,7 @@ public class Point implements Comparable<Point> {
     }
 
     public int compareTo(Point point) {
-        if (x > point.x || x == point.x && y > point.y) return 1;
+        if (x > point.x || x == point.x && y < point.y) return 1;
         if (x == point.x && y == point.y) return 0;
         return -1;
     }
@@ -67,7 +67,8 @@ public class Point implements Comparable<Point> {
 
     @Override
     public boolean equals(Object point) {
-        return point instanceof Point && x == ((Point) point).x && y == ((Point) point).y;
+        double epsilon = 0.00001;
+        return point instanceof Point && Math.abs(x - ((Point) point).x) <epsilon && Math.abs(y - ((Point) point).y)<epsilon;
     }
 
 

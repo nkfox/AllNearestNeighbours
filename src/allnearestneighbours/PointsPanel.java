@@ -52,7 +52,7 @@ public class PointsPanel extends JPanel {
     private void printDiagram(Graphics page) {
         for (VoronoiPoint point : diagram.points) {
             VoronoiEdge current = point.firstEdge;
-            int i=20;
+            int i=200;
             if (current != null)
                 do {
                     //System.out.println(current.beginVertex.x + " " + current.beginVertex.y + " " + current.endVertex.x + " " + current.endVertex.y);
