@@ -1,5 +1,6 @@
 package allnearestneighbours;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -150,20 +151,37 @@ public class VoronoiDiagram {
         if (currentRightEdge != null)
             currentRightPoint = currentRightEdge.leftSide;
         else currentRightPoint = right.points.get(0);
+        VoronoiEdge last = null;
 
         double currentY = PointsPanel.MAX;
 
+        int i=6;
         do {
+            if (left.points.size() == 5 && right.points.size() == 5 && i--==0) break;
             double leftY = getY(currentLeftEdge, currentLine);
             double rightY = getY(currentRightEdge, currentLine);
 
-            if (leftY == -PointsPanel.MAX && rightY == -PointsPanel.MAX) break;
-            if (currentLeftEdge != null && (leftY >= rightY || rightY >= currentY) && currentY >= leftY + 0.00001) {
-                VoronoiEdge edge = new VoronoiEdge(new Point(currentLine.findX(currentY), currentY),
-                        new Point(currentLine.findX(leftY), leftY), currentRightPoint, currentLeftPoint);
+            if (leftY == -PointsPanel.MAX && rightY == -PointsPanel.MAX) {
+                // а что если два ребра у вершины параллельны??
+
+                if (upperEdge.beginVertex.distanceTo(upperEdge.endVertex) < upperEdge.beginVertex.distanceTo(right.points.get(0)))
+                    currentLine = new Line(upperEdge.beginVertex, upperEdge.endVertex, true);
+                else currentLine = new Line(upperEdge.beginVertex, right.points.get(0), true);
+
+                Point begin = new Point(-PointsPanel.MAX, currentLine.findY(-PointsPanel.MAX));
+                Point end = new Point(PointsPanel.MAX, currentLine.findY(PointsPanel.MAX));
+                VoronoiEdge edge = new VoronoiEdge(begin, end, currentRightPoint, currentLeftPoint);
+                currentLeftPoint.firstEdge = edge;
+                edge.reverse.clockwise = currentRightPoint.firstEdge;
+                currentRightPoint.firstEdge = edge.reverse;
+
+                break; // change!!
+            }
+            if (currentLeftEdge != null && (leftY >= rightY || rightY >= currentY) && currentY + 0.00001 >= leftY) {
+                VoronoiEdge edge = buildNewEdge(currentLine,currentY,leftY,currentRightPoint, currentLeftPoint,currentLeftEdge,last);
                 //System.out.println(edge.beginVertex.x + " " + edge.beginVertex.y + "              " + edge.endVertex.x + " " + edge.endVertex.y);
 
-                VoronoiEdge rightAnticlockwise = currentRightEdge != null?currentRightEdge.anticlockwise: null;
+                VoronoiEdge rightAnticlockwise = currentRightEdge != null ? currentRightEdge.anticlockwise : null;
                 VoronoiEdge leftClockwise = currentLeftEdge.clockwise;
                 Point previousEnd = currentLeftEdge.endVertex;
 
@@ -176,12 +194,15 @@ public class VoronoiDiagram {
                 previousLeftEdge = currentLeftEdge;
                 previousRightEdge = edge;
                 leftIntersection = edge.endVertex;
+                last = edge;
 
                 currentLeftPoint = currentLeftEdge.leftSide;
                 if (Math.abs(leftY - rightY) < 0.00001) {
-                    //currentRightEdge = currentRightEdge.reverse;
-                    if (!edge.endVertex.equals(currentRightEdge.beginVertex))
+                    if (!edge.endVertex.equals(currentRightEdge.beginVertex)) {
+                        currentRightEdge.beginVertex = edge.endVertex;
+                        currentRightEdge.reverse.endVertex = edge.endVertex;
                         currentRightEdge = currentRightEdge.reverse;
+                    }
                     else currentRightEdge = rightAnticlockwise.reverse.anticlockwise;
                     previousRightEdge = currentRightEdge;
                     rightIntersection = edge.endVertex;
@@ -191,13 +212,12 @@ public class VoronoiDiagram {
                 if (currentLeftPoint.equals(lowerEdge.beginVertex) && currentRightPoint.equals(lowerEdge.endVertex))
                     addLastEdge(currentLeftPoint, currentRightPoint, currentLine, currentY, previousLeftEdge, previousRightEdge);
                 else {
-                    currentLeftEdge = findNextEdge(currentLeftEdge, currentLine, false, edge.reverse, leftIntersection, rightIntersection);
-                    currentRightEdge = findNextEdge(currentRightEdge, currentLine, true, edge, leftIntersection, rightIntersection);
+                    currentLeftEdge = findNextEdge(currentLeftEdge, currentLine, false, edge.reverse, leftIntersection, rightIntersection,true);
+                    currentRightEdge = findNextEdge(currentRightEdge, currentLine, true, edge, leftIntersection, rightIntersection,false);
                 }
                 //break;
             } else if (currentRightEdge != null) {
-                VoronoiEdge edge = new VoronoiEdge(new Point(currentLine.findX(currentY), currentY),
-                        new Point(currentLine.findX(rightY), rightY), currentRightPoint, currentLeftPoint);
+                VoronoiEdge edge = buildNewEdge(currentLine,currentY,rightY,currentRightPoint, currentLeftPoint,currentRightEdge,last);
                 //System.out.println(edge.beginVertex.x + " " + edge.beginVertex.y + "              " + edge.endVertex.x + " " + edge.endVertex.y);
 
                 VoronoiEdge rightAnticlockwise = currentRightEdge.anticlockwise;
@@ -213,12 +233,15 @@ public class VoronoiDiagram {
                 previousLeftEdge = edge.reverse;
                 previousRightEdge = currentRightEdge;
                 rightIntersection = edge.endVertex;
+                last = edge;
 
                 currentRightPoint = currentRightEdge.leftSide;
                 if (Math.abs(leftY - rightY) < 0.00001) {
-                    //currentLeftEdge = currentLeftEdge.reverse;
-                    if (!edge.endVertex.equals(currentLeftEdge.endVertex))
+                    if (!edge.endVertex.equals(currentLeftEdge.endVertex)) {
+                        currentLeftEdge.beginVertex = edge.endVertex;
+                        currentLeftEdge.reverse.endVertex = edge.endVertex;
                         currentLeftEdge = currentLeftEdge.reverse;
+                    }
                     else currentLeftEdge = leftClockwise.reverse.clockwise;
                     previousLeftEdge = currentLeftEdge;
                     leftIntersection = edge.endVertex;
@@ -228,15 +251,25 @@ public class VoronoiDiagram {
                 if (currentLeftPoint.equals(lowerEdge.beginVertex) && currentRightPoint.equals(lowerEdge.endVertex))
                     addLastEdge(currentLeftPoint, currentRightPoint, currentLine, currentY, previousLeftEdge, previousRightEdge);
                 else {
-                    currentLeftEdge = findNextEdge(currentLeftEdge, currentLine, true, edge.reverse, leftIntersection, rightIntersection);
-                    currentRightEdge = findNextEdge(currentRightEdge, currentLine, false, edge, leftIntersection, rightIntersection);
+                    currentLeftEdge = findNextEdge(currentLeftEdge, currentLine, true, edge.reverse, leftIntersection, rightIntersection,true);
+                    currentRightEdge = findNextEdge(currentRightEdge, currentLine, false, edge, leftIntersection, rightIntersection,false);
                 }
+                //break;
             } else {
                 System.out.println("Error");
                 break;
             }
         }
         while (!currentLeftPoint.equals(lowerEdge.beginVertex) || !currentRightPoint.equals(lowerEdge.endVertex));
+    }
+
+    private static VoronoiEdge buildNewEdge(Line currentLine,double beginY, double endY, VoronoiPoint currentRightPoint,
+                                            VoronoiPoint currentLeftPoint, VoronoiEdge intersected,VoronoiEdge last){
+        if (Math.abs(currentLine.d)>0.00001)
+            return new VoronoiEdge(new Point(currentLine.findX(beginY), beginY),
+                new Point(currentLine.findX(endY), endY), currentRightPoint, currentLeftPoint);
+        return new VoronoiEdge(new Point(last.endVertex.x, beginY), new Point(currentLine.intersection(
+                new Line(intersected.beginVertex, intersected.endVertex,false)).x, endY), currentRightPoint, currentLeftPoint);
     }
 
     private VoronoiEdge getFirstEdge(VoronoiDiagram diagram, Point point, Line line, boolean endVertexIncluded) {
@@ -341,13 +374,15 @@ public class VoronoiDiagram {
     }
 
     private static VoronoiEdge findNextEdge(VoronoiEdge edge, Line currentLine, boolean included, VoronoiEdge lastIncluded,
-                                            Point lastLeftIntersection, Point lastRightIntersection) {
+                                            Point lastLeftIntersection, Point lastRightIntersection,boolean includedEnd) {
         VoronoiEdge currentEdge;
         if (edge == null) {
             currentEdge = lastIncluded.leftSide.firstEdge;
-            while (currentEdge != null && !currentLine.intersects(currentEdge, true)) {
+            int i = 200;
+            while (i-- > 0 && currentEdge != null && !currentLine.intersects(currentEdge, includedEnd)) {
                 currentEdge = currentEdge.clockwise;
             }
+            if (i == 0) System.out.println("Error in findNextEdge");
             if (currentEdge == null) return null;
             Line edgeLine = new Line(currentEdge.beginVertex, currentEdge.endVertex, false);
             Point point = currentLine.intersection(edgeLine);
@@ -355,30 +390,71 @@ public class VoronoiDiagram {
                     (lastRightIntersection == null || point != null && point.distanceTo(lastRightIntersection) > 0.001))
                 return currentEdge;
             currentEdge = currentEdge.clockwise;
-            while (currentEdge != null && !currentLine.intersects(currentEdge, true)) {
+            i = 200;
+            while (i-- > 0 && currentEdge != null && !currentLine.intersects(currentEdge, includedEnd)) {
                 currentEdge = currentEdge.clockwise;
             }
+            if (i == 0) System.out.println("Error in findNextEdge");
         } else {
-            if (included && currentLine.intersects(edge, true)) return edge;
+            if (included && currentLine.intersects(edge, includedEnd)) return edge;
             currentEdge = edge.clockwise;
-            if (currentEdge != null && (currentEdge.equals(lastIncluded) || currentEdge.equals(lastIncluded.reverse)))
+            if (currentEdge != null && /*(currentEdge.equals(lastIncluded) || currentEdge.equals(lastIncluded.reverse))*/
+                    isBadEdge(currentEdge, currentLine, lastIncluded, lastLeftIntersection, lastRightIntersection,includedEnd))
                 currentEdge = null;
             else {
-                while (currentEdge != null && !currentLine.intersects(currentEdge, true)) {
+                int i = 200;
+                while (i-- > 0 && currentEdge != null && !currentLine.intersects(currentEdge, includedEnd)) {
                     currentEdge = currentEdge.clockwise;
                 }
+                if (i == 0) System.out.println("Error in findNextEdge");
             }
             if (currentEdge == null) {
                 currentEdge = edge.anticlockwise;
-                if (currentEdge != null && (currentEdge.equals(lastIncluded) || currentEdge.equals(lastIncluded.reverse)))
+                if (currentEdge != null && /*(currentEdge.equals(lastIncluded) || currentEdge.equals(lastIncluded.reverse))*/
+                        isBadEdge(currentEdge, currentLine, lastIncluded, lastLeftIntersection, lastRightIntersection,includedEnd))
                     currentEdge = null;
                 else {
-                    while (currentEdge != null && !currentLine.intersects(currentEdge, true)) {
+                    int i = 200;
+                    while (i-- > 0 && currentEdge != null && !currentLine.intersects(currentEdge, includedEnd)) {
                         currentEdge = currentEdge.anticlockwise;
                     }
+                    if (i == 0) System.out.println("Error in findNextEdge");
                 }
             }
         }
         return currentEdge;
+    }
+
+    private static boolean isBadEdge(VoronoiEdge currentEdge, Line currentLine,VoronoiEdge lastIncluded,
+                               Point lastLeftIntersection, Point lastRightIntersection,boolean includedEnd){
+        Point intersection = currentLine.intersection(new Line(currentEdge.beginVertex, currentEdge.endVertex,false));
+        return currentEdge.equals(lastIncluded) || currentEdge.equals(lastIncluded.reverse) ||
+                intersection!=null && (intersection.equals(lastLeftIntersection) || intersection.equals(lastRightIntersection));
+
+    }
+
+    public void draw(Graphics page) {
+        int k = 0;
+        for (VoronoiPoint point : points) {
+            VoronoiEdge current = point.firstEdge;
+            int i = 2000;
+            if (current != null)
+                do {
+                    //System.out.println(current.beginVertex.x + " " + current.beginVertex.y + " " + current.endVertex.x + " " + current.endVertex.y);
+                    /*if (current.beginVertex.x<0 && current.endVertex.x > 30 || current.endVertex.x<0 && current.beginVertex.x > 30 ||
+                            current.beginVertex.x>PointsPanel.WIDTH && current.endVertex.x <PointsPanel.WIDTH-30
+                            || current.endVertex.x>PointsPanel.WIDTH && current.beginVertex.x <PointsPanel.WIDTH-30) k++;
+                    else*/
+                    page.drawLine((int) current.beginVertex.x, PointsPanel.HEIGHT - (int) current.beginVertex.y,
+                            (int) current.endVertex.x, PointsPanel.HEIGHT - (int) current.endVertex.y);
+                    current = current.clockwise;
+                } while (current != null && !current.equals(point.firstEdge) && i-- > 0);
+            //System.out.println("\n");
+        }
+        System.out.println(k);
+    }
+
+    public void update(Graphics page) {
+        draw(page);
     }
 }

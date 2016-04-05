@@ -21,13 +21,6 @@ public class VoronoiEdge {
         this.endVertex = endVertex;
         this.leftSide = leftSide;
         this.rightSide = rightSide;
-        /*if (polarAngle(beginVertex, leftSide) > polarAngle(beginVertex, endVertex)) {
-            this.leftSide = leftSide;
-            this.rightSide = rightSide;
-        } else {
-            this.leftSide = rightSide;
-            this.rightSide = leftSide;
-        }*/
         this.reverse = new VoronoiEdge(endVertex, beginVertex, rightSide, leftSide, this);
     }
 

@@ -1,12 +1,12 @@
-import allnearestneighbours.Point;
-import allnearestneighbours.PointsPanel;
-import allnearestneighbours.VoronoiDiagram;
-import allnearestneighbours.VoronoiPoint;
+import allnearestneighbours.*;
 
 import javax.swing.*;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
@@ -19,24 +19,96 @@ public class Main {
 
     public static void getRandomPoints(int n) {
         points = new ArrayList<>();
-        while (n-- > 0) {
+        /*while (n-- > 0) {
             Point point = new Point();
             //point.print();
             boolean ok = true;
-            for (Point p : points)
-                if (point.distanceTo(p) < 0.01)
+            for (Point p : points) {
+                if (point.distanceTo(p) < 0.1) {
                     ok = false;
+                    break;
+                }
+            }
             if (ok)
                 points.add(point);
             else n++;
         }
 
-        /*//points.add(new Point(100+50*Math.sin(Math.PI*5/6),150+50*Math.cos(Math.PI*5/6)));
-        points.add(new Point(100+50*Math.cos(Math.PI/6),150+50*Math.sin(Math.PI/6)));
-        points.add(new Point(100,100));
+        int k = 0;
+        Collections.sort(points);
+        for (int i = 0; i < points.size() - 2; i++) {
+            Point point = points.get(i);
+            Point next = points.get(i + 1);
+            Point check = points.get(i + 2);
+            Line line = new Line(point, next, false);
+            double y = line.findY(check.x);
+            if (Math.abs(y - check.y) < 0.01) {
+                points.remove(i + 2);
+                k++;
+            }
+            i++;
+        }*/
+
+        /*while (k-- > 0) {
+            Point point = new Point();
+            points.add(point);
+        }*/
+
+        points.add(new Point(100.0,200.0));
+        points.add(new Point(100.0,100.0));
+        points.add(new Point(107.96467549591532,359.45041749899735));
+        points.add(new Point(124.73773411553934,366.805397319795));
+        points.add(new Point(133.098808862271,657.0476200256147));
+
+        points.add(new Point(135.35533905932738,185.35533905932738));
+        points.add(new Point(143.30127018922195,175.0));
+        points.add(new Point(150.0,150.0));
+        points.add(new Point(189.82698744112116,218.89860786013494));
+        points.add(new Point(478.97292953006126,29.42880903103944));
+
+        /*
+        (542.9157037580674,160.2500504576828)
+        (673.7918101872401,479.94702616804096)
+        (764.8002267384703,246.77352657087565)
+        (935.9898998160872,350.13542123030425)
+        (954.7968384639926,171.39417869459848)
+        (1119.9900176973529,87.03958100158647)
+        (1139.3238315298536,283.7019037089861)
+        (1214.1347968243788,366.05947156543175)
+        (1297.1424358094937,259.7418198983695)
+        (1316.4655196205576,47.9946016209944)*/
+
+        /*//circle + random
+        points.add(new Point(83.02382472734023,302.3972688413379));
         points.add(new Point(100,200));
+        points.add(new Point(100,100));
+        points.add(new Point(100+50*Math.cos(Math.PI/6),150+50*Math.sin(Math.PI/6)));
+        points.add(new Point(100+50*Math.sin(Math.PI/4),150+50*Math.cos(Math.PI/4)));
         points.add(new Point(150,150));
-        points.add(new Point(100+50*Math.sin(Math.PI/4),150+50*Math.cos(Math.PI/4)));*/
+        points.add(new Point(217.29757168920074,271.9796315018999));
+        points.add(new Point(303.0322488571952,127.28579802818949));
+        points.add(new Point(416.4147690849933,284.4969709688983));
+        points.add(new Point(490.0263161424196,137.63432698355564));*/
+
+
+        /*points.add(new Point(100.0,200.0));
+        points.add(new Point(100.0,100.0));
+        points.add(new Point(135.35533905932738,185.35533905932738));
+        points.add(new Point(143.30127018922195,175.0));
+        points.add(new Point(147.2371420252199,433.88139827026174));
+        points.add(new Point(150.0,150.0));
+        points.add(new Point(909.4731924033567,363.3090270212545));
+        points.add(new Point(928.4060508920621,68.5398627488856));
+        points.add(new Point(1184.0298406153163,392.86093994769914));
+        points.add(new Point(1326.152612376465,64.46624806847228));*/
+
+        /*//circle
+        //points.add(new Point(100+50*Math.sin(Math.PI*5/6),150+50*Math.cos(Math.PI*5/6)));
+        points.add(new Point(100 + 50 * Math.cos(Math.PI / 6), 150 + 50 * Math.sin(Math.PI / 6)));
+        points.add(new Point(100, 100));
+        points.add(new Point(100, 200));
+        points.add(new Point(150, 150));
+        points.add(new Point(100 + 50 * Math.sin(Math.PI / 4), 150 + 50 * Math.cos(Math.PI / 4)));*/
 
         /*//one edge intersected twice
         points.add(new Point(83.02382472734023,302.3972688413379));
@@ -52,7 +124,7 @@ public class Main {
         points.add(new Point(546.0364444369347, 36.71177204163576));
         points.add(new Point(588.2094851002904, 304.4107512161108));*/
 
-        /*//three points on one line - ok
+        /*//three points on one line
         points.add(new Point(536.9823347276437,123.02802995020201));
         points.add(new Point(534.9551920464446,342.0229870734802));
         points.add(new Point(12.917193875781319,295.08003193035495));
@@ -134,15 +206,35 @@ public class Main {
         return panel;
     }
 
+    static void getData() {
+        points = new ArrayList<>();
+        try (FileInputStream inp = new FileInputStream("D:/points.txt")) {
+            Scanner in = new Scanner(new InputStreamReader(inp, "UTF-8"));
+            //int k = 8;
+            while (/*k-- > 0 && */in.hasNext()) {
+                Double a = in.nextDouble();
+                Double b = in.nextDouble();
+                points.add(new Point(a, b));
+            }
+        } catch (Exception ignored) {
+        }
+        //points=points.subList(0, points.size() / 2);
+        //points=points.subList(points.size() / 2, points.size());
+        System.out.println(points.size());
+    }
+
     public static void main(String[] args) {
 
-        getRandomPoints(5000);
+        getRandomPoints(15);
+        //getData();
+        if (points.size() == 0) return;
 
         getNearestNeighboursBruteForce();
-        PointsPanel panel = printNeighbours();
 
         long startTime = System.nanoTime();
         Collections.sort(points);
+        for (Point point: points)
+        point.print();
         List<VoronoiPoint> voronoiPoints = points.stream().map(VoronoiPoint::new).collect(Collectors.toList());
         //System.out.println("Points sorted");
         VoronoiDiagram voronoiDiagram = new VoronoiDiagram(voronoiPoints);
@@ -152,6 +244,7 @@ public class Main {
         System.out.println(duration / 1000000000.0 + " seconds");
 
         System.out.println("Diagram finished");
+        PointsPanel panel = printNeighbours();
         panel.setDiagram(voronoiDiagram);
         System.out.println("Painting finished");
     }

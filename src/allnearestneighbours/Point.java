@@ -8,8 +8,8 @@ import java.util.Random;
  * All info about point
  */
 public class Point implements Comparable<Point> {
-    double x;
-    double y;
+    public double x;
+    public double y;
     Point nearestNeighbour;
 
     public Point(double x, double y) {
@@ -57,7 +57,7 @@ public class Point implements Comparable<Point> {
 
     public void draw(Graphics page) {
         page.setColor(color);
-        page.fillOval((int)x - 3, PointsPanel.HEIGHT-(int)y - 3, 6, 6);
+        page.fillOval((int) x - 3, PointsPanel.HEIGHT - (int) y - 3, 6, 6);
         //page.drawLine(x, y, nearestNeighbour.x, nearestNeighbour.y);
     }
 
@@ -68,7 +68,7 @@ public class Point implements Comparable<Point> {
     @Override
     public boolean equals(Object point) {
         double epsilon = 0.00001;
-        return point instanceof Point && Math.abs(x - ((Point) point).x) <epsilon && Math.abs(y - ((Point) point).y)<epsilon;
+        return point instanceof Point && Math.abs(x - ((Point) point).x) < epsilon && Math.abs(y - ((Point) point).y) < epsilon;
     }
 
 

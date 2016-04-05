@@ -52,12 +52,15 @@ public class Line {
         return (y - c) * b / d + a;
     }
 
-    public boolean intersects(VoronoiEdge edge,boolean endVertexIncluded) {
+    public boolean intersects(VoronoiEdge edge, boolean endVertexIncluded) {
         double yLeft = findY(edge.beginVertex.x);
         double yRight = findY(edge.endVertex.x);
         double epsilon = 0.00001;
+        if (!endVertexIncluded && Math.abs(yRight - edge.endVertex.y) < epsilon ||
+                endVertexIncluded && Math.abs(yLeft - edge.beginVertex.y) < epsilon) return false;
         return (edge.beginVertex.y - yLeft) * (edge.endVertex.y - yRight) <= 0 ||
                 Math.abs(yLeft - edge.beginVertex.y) < epsilon ||
-                endVertexIncluded && Math.abs(yRight - edge.endVertex.y) < epsilon;
+                endVertexIncluded && Math.abs(yRight - edge.endVertex.y) < epsilon ||
+                !endVertexIncluded && Math.abs(yLeft - edge.beginVertex.y) < epsilon;
     }
 }
