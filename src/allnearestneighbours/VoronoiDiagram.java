@@ -157,13 +157,11 @@ public class VoronoiDiagram {
 
         int i=6;
         do {
-            if (left.points.size() == 5 && right.points.size() == 5 && i--==0) break;
+            //if (left.points.size() == 5 && right.points.size() == 5 && i--==0) break;
             double leftY = getY(currentLeftEdge, currentLine);
             double rightY = getY(currentRightEdge, currentLine);
 
             if (leftY == -PointsPanel.MAX && rightY == -PointsPanel.MAX) {
-                // а что если два ребра у вершины параллельны??
-
                 if (upperEdge.beginVertex.distanceTo(upperEdge.endVertex) < upperEdge.beginVertex.distanceTo(right.points.get(0)))
                     currentLine = new Line(upperEdge.beginVertex, upperEdge.endVertex, true);
                 else currentLine = new Line(upperEdge.beginVertex, right.points.get(0), true);
@@ -175,7 +173,7 @@ public class VoronoiDiagram {
                 edge.reverse.clockwise = currentRightPoint.firstEdge;
                 currentRightPoint.firstEdge = edge.reverse;
 
-                break; // change!!
+                break;
             }
             if (currentLeftEdge != null && (leftY >= rightY || rightY >= currentY) && currentY + 0.00001 >= leftY) {
                 VoronoiEdge edge = buildNewEdge(currentLine,currentY,leftY,currentRightPoint, currentLeftPoint,currentLeftEdge,last);
@@ -238,8 +236,8 @@ public class VoronoiDiagram {
                 currentRightPoint = currentRightEdge.leftSide;
                 if (Math.abs(leftY - rightY) < 0.00001) {
                     if (!edge.endVertex.equals(currentLeftEdge.endVertex)) {
-                        currentLeftEdge.beginVertex = edge.endVertex;
-                        currentLeftEdge.reverse.endVertex = edge.endVertex;
+                        currentLeftEdge.endVertex = edge.endVertex;
+                        currentLeftEdge.reverse.beginVertex = edge.endVertex;
                         currentLeftEdge = currentLeftEdge.reverse;
                     }
                     else currentLeftEdge = leftClockwise.reverse.clockwise;
@@ -361,9 +359,18 @@ public class VoronoiDiagram {
                                     VoronoiEdge leftEdge, VoronoiEdge rightEdge) {
         double minY = -PointsPanel.MAX;
         VoronoiEdge edge;
-        Point beginVertex = new Point(currentLine.findX(currentY), currentY);
-        Point endVertex = new Point(currentLine.findX(minY), minY);
-        edge = new VoronoiEdge(beginVertex, endVertex, right, left);
+        if (Math.abs(currentLine.d)>0.00001) {
+            Point beginVertex = new Point(currentLine.findX(currentY), currentY);
+            Point endVertex = new Point(currentLine.findX(minY), minY);
+            edge = new VoronoiEdge(beginVertex, endVertex, right, left);
+        } else{
+            Point beginVertex = leftEdge.beginVertex;
+            double x=0;
+            if (right.y>left.y) x=PointsPanel.MAX;
+            else x=-PointsPanel.MAX;
+            Point endVertex = new Point(x, currentY);
+            edge = new VoronoiEdge(beginVertex, endVertex, right, left);
+        }
 
         edge.reverse.clockwise = leftEdge;
         leftEdge.anticlockwise = edge.reverse;

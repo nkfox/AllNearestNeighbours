@@ -19,7 +19,7 @@ public class Main {
 
     public static void getRandomPoints(int n) {
         points = new ArrayList<>();
-        /*while (n-- > 0) {
+        while (n-- > 0) {
             Point point = new Point();
             //point.print();
             boolean ok = true;
@@ -47,14 +47,14 @@ public class Main {
                 k++;
             }
             i++;
-        }*/
+        }
 
         /*while (k-- > 0) {
             Point point = new Point();
             points.add(point);
         }*/
 
-        points.add(new Point(100.0,200.0));
+        /*points.add(new Point(100.0,200.0));
         points.add(new Point(100.0,100.0));
         points.add(new Point(107.96467549591532,359.45041749899735));
         points.add(new Point(124.73773411553934,366.805397319795));
@@ -64,7 +64,7 @@ public class Main {
         points.add(new Point(143.30127018922195,175.0));
         points.add(new Point(150.0,150.0));
         points.add(new Point(189.82698744112116,218.89860786013494));
-        points.add(new Point(478.97292953006126,29.42880903103944));
+        points.add(new Point(478.97292953006126,29.42880903103944));*/
 
         /*
         (542.9157037580674,160.2500504576828)
@@ -102,13 +102,13 @@ public class Main {
         points.add(new Point(1184.0298406153163,392.86093994769914));
         points.add(new Point(1326.152612376465,64.46624806847228));*/
 
-        /*//circle
+        //circle
         //points.add(new Point(100+50*Math.sin(Math.PI*5/6),150+50*Math.cos(Math.PI*5/6)));
-        points.add(new Point(100 + 50 * Math.cos(Math.PI / 6), 150 + 50 * Math.sin(Math.PI / 6)));
-        points.add(new Point(100, 100));
-        points.add(new Point(100, 200));
-        points.add(new Point(150, 150));
-        points.add(new Point(100 + 50 * Math.sin(Math.PI / 4), 150 + 50 * Math.cos(Math.PI / 4)));*/
+        points.add(new Point(300 + 50 * Math.cos(Math.PI / 6), 150 + 50 * Math.sin(Math.PI / 6)));
+        points.add(new Point(300, 100));
+        points.add(new Point(300, 200));
+        points.add(new Point(350, 150));
+        points.add(new Point(300 + 50 * Math.sin(Math.PI / 4), 150 + 50 * Math.cos(Math.PI / 4)));
 
         /*//one edge intersected twice
         points.add(new Point(83.02382472734023,302.3972688413379));
@@ -233,8 +233,8 @@ public class Main {
 
         long startTime = System.nanoTime();
         Collections.sort(points);
-        for (Point point: points)
-        point.print();
+        /*for (Point point: points)
+        point.print();*/
         List<VoronoiPoint> voronoiPoints = points.stream().map(VoronoiPoint::new).collect(Collectors.toList());
         //System.out.println("Points sorted");
         VoronoiDiagram voronoiDiagram = new VoronoiDiagram(voronoiPoints);

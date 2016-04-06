@@ -6,6 +6,9 @@ package allnearestneighbours;
  */
 public class VoronoiPoint extends Point {
 
+    Point up;
+    Point down;
+
     VoronoiEdge firstEdge;
 
     public VoronoiPoint(double x, double y) {
