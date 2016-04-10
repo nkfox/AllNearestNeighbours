@@ -49,6 +49,8 @@ public class VoronoiDiagram {
             edge = edge.reverse;
         begin.firstEdge = edge;
         end.firstEdge = edge.reverse;
+
+        setNearestNeighbours(begin,end);
     }
 
     private List<VoronoiEdge> findConvexHull(VoronoiDiagram left, VoronoiDiagram right) {
@@ -157,6 +159,8 @@ public class VoronoiDiagram {
 
         int i=0;
         do {
+            setNearestNeighbours(currentLeftPoint,currentRightPoint);
+
             //if (left.points.size() == 4 && right.points.size() == 4 && i--==0) break;
             double leftY = getY(currentLeftEdge, currentLine);
             double rightY = getY(currentRightEdge, currentLine);
@@ -378,6 +382,8 @@ public class VoronoiDiagram {
         rightEdge.clockwise = edge;
 
         left.firstEdge = edge.reverse;
+
+        setNearestNeighbours(left,right);
     }
 
     private static VoronoiEdge findNextEdge(VoronoiEdge edge, Line currentLine, boolean included, VoronoiEdge lastIncluded,
@@ -440,12 +446,20 @@ public class VoronoiDiagram {
 
     }
 
+    private static void setNearestNeighbours(VoronoiPoint left, VoronoiPoint right){
+        left.setNearestNeighbour(right);
+        right.setNearestNeighbour(left);
+    }
+
     public void draw(Graphics page) {
         int k = 0;
         for (VoronoiPoint point : points) {
-            VoronoiEdge current = point.firstEdge;
-            int i = 2000;
-            if (current != null)
+            point.draw(page);
+            if (PointsPanel.printDiagram) {
+                VoronoiEdge current = point.firstEdge;
+                int i = 2000;
+                if (current != null)
+                    page.setColor(new Color(0));
                 do {
                     //System.out.println(current.beginVertex.x + " " + current.beginVertex.y + " " + current.endVertex.x + " " + current.endVertex.y);
                     /*if (current.beginVertex.x<0 && current.endVertex.x > 30 || current.endVertex.x<0 && current.beginVertex.x > 30 ||
@@ -456,9 +470,10 @@ public class VoronoiDiagram {
                             (int) current.endVertex.x, PointsPanel.HEIGHT - (int) current.endVertex.y);
                     current = current.clockwise;
                 } while (current != null && !current.equals(point.firstEdge) && i-- > 0);
-            //System.out.println("\n");
+                //System.out.println("\n");
+            }
         }
-        System.out.println(k);
+        //System.out.println(k);
     }
 
     public void update(Graphics page) {

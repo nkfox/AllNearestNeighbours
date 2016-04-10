@@ -11,11 +11,19 @@ public class Point implements Comparable<Point> {
     public double x;
     public double y;
     Point nearestNeighbour;
+    protected Color color = new Color(Math.abs((new Random()).nextInt()) % 16777216);
 
     public Point(double x, double y) {
         this.x = x;
         this.y = y;
         nearestNeighbour = null;
+    }
+
+    public Point(double x, double y, Color color) {
+        this.x = x;
+        this.y = y;
+        nearestNeighbour = null;
+        this.color = color;
     }
 
     public Point() {
@@ -49,16 +57,17 @@ public class Point implements Comparable<Point> {
         return nearestNeighbour;
     }
 
-    public void setNearestNeighbour(Point nearestNeighbour) {
-        this.nearestNeighbour = nearestNeighbour;
+    public void setNearestNeighbour(Point newNeighbour) {
+        //this.nearestNeighbour = nearestNeighbour;
+        if (nearestNeighbour == null || distanceTo(nearestNeighbour)>distanceTo(newNeighbour))
+            nearestNeighbour = newNeighbour;
     }
-
-    private Color color = new Color(Math.abs((new Random()).nextInt()) % 16777216);
 
     public void draw(Graphics page) {
         page.setColor(color);
         page.fillOval((int) x - 3, PointsPanel.HEIGHT - (int) y - 3, 6, 6);
-        //page.drawLine(x, y, nearestNeighbour.x, nearestNeighbour.y);
+        if (nearestNeighbour != null && PointsPanel.printNeighbours)
+            page.drawLine((int) x, PointsPanel.HEIGHT - (int) y, (int) nearestNeighbour.x, PointsPanel.HEIGHT - (int) nearestNeighbour.y);
     }
 
     public void update(Graphics page) {

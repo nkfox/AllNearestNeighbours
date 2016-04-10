@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class Main {
 
     static List<Point> points;
+    static VoronoiDiagram voronoiDiagram;
 
     public static void getRandomPoints(int n) {
         points = new ArrayList<>();
@@ -184,34 +185,11 @@ public class Main {
 
     }
 
-    public static void getNearestNeighboursBruteForce() {
-        long startTime = System.nanoTime();
-        for (Point point : points) {
-            points.stream().filter(otherPoint -> point != otherPoint && point.distanceTo(otherPoint) <
-                    point.distanceTo(point.getNearestNeighbour())).forEach(point::setNearestNeighbour);
-            //point.printNeighbour();
-        }
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime);
-        System.out.println(duration / 1000000000.0 + " seconds");
-    }
-
-    public static PointsPanel printNeighbours() {
-        JFrame circlesFrame = new JFrame("Points");
-        circlesFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        PointsPanel panel = new PointsPanel(points);
-        circlesFrame.getContentPane().add(panel);
-        circlesFrame.pack();
-        circlesFrame.setVisible(true);
-        return panel;
-    }
-
     static void getData() {
         points = new ArrayList<>();
         try (FileInputStream inp = new FileInputStream("D:/points.txt")) {
             Scanner in = new Scanner(new InputStreamReader(inp, "UTF-8"));
-            //int k = 8;
-            while (/*k-- > 0 && */in.hasNext()) {
+            while (in.hasNext()) {
                 Double a = in.nextDouble();
                 Double b = in.nextDouble();
                 points.add(new Point(a, b));
@@ -219,23 +197,61 @@ public class Main {
         } catch (Exception ignored) {
         }
         //points=points.subList(0, points.size() / 2);
-        points=points.subList(points.size() / 2, points.size());
-        points=points.subList(0, points.size() / 2);
-        points=points.subList(points.size() / 2, points.size());
-        points=points.subList(points.size() / 2, points.size());
-        points=points.subList(0, points.size() / 2);
-        points=points.subList(points.size() / 2, points.size());
-        points=points.subList(points.size() / 2, points.size());
-        points=points.subList(points.size() / 2, points.size());
-        points=points.subList(points.size() / 2, points.size());
-        points=points.subList(0, points.size() / 2);
         //points=points.subList(points.size() / 2, points.size());
-        //System.out.println(points.size());
+    }
+
+    public static PointsPanel printNeighbours() {
+        JFrame pointsFrame = new JFrame("Points");
+        //pointsFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        PointsPanel panel = new PointsPanel(points);
+        pointsFrame.getContentPane().add(panel);
+        pointsFrame.pack();
+        pointsFrame.setVisible(true);
+        return panel;
+    }
+
+    public static PointsPanel printNeighbours(VoronoiDiagram diagram) {
+        JFrame voronoiFrame = new JFrame("Diagram");
+        //voronoiFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        PointsPanel panel = new PointsPanel(diagram);
+        voronoiFrame.getContentPane().add(panel);
+        voronoiFrame.pack();
+        voronoiFrame.setVisible(true);
+        return panel;
+    }
+
+    public static double getNearestNeighboursBruteForce() {
+        long startTime = System.nanoTime();
+        for (Point point : points) {
+            points.stream().filter(otherPoint -> point != otherPoint && point.distanceTo(otherPoint) <
+                    point.distanceTo(point.getNearestNeighbour())).forEach(point::setNearestNeighbour);
+            //point.printNeighbour();
+        }
+        long endTime = System.nanoTime();
+        double duration = (endTime - startTime) / 1000000000.0;
+        System.out.println(duration + " seconds");
+        PointsPanel bruteForcePanel = printNeighbours();
+        return duration;
+    }
+
+    public static double getNearestNeighboursVoronoi() {
+        long startTime = System.nanoTime();
+        Collections.sort(points);
+        /*for (Point point: points)
+        point.print();*/
+        List<VoronoiPoint> voronoiPoints = points.stream().map(VoronoiPoint::new).collect(Collectors.toList());
+        voronoiDiagram = new VoronoiDiagram(voronoiPoints);
+
+        long endTime = System.nanoTime();
+        double duration = (endTime - startTime)/ 1000000000.0;
+        System.out.println(duration  + " seconds");
+        PointsPanel voronoiPanel = printNeighbours(voronoiDiagram);
+        return duration;
     }
 
     public static void main(String[] args) {
 
-        getRandomPoints(5000);
+        /*getRandomPoints(500);
         //getData();
         if (points.size() == 0) return;
 
@@ -243,10 +259,9 @@ public class Main {
 
         long startTime = System.nanoTime();
         Collections.sort(points);
-        /*for (Point point: points)
-        point.print();*/
+        *//*for (Point point: points)
+        point.print();*//*
         List<VoronoiPoint> voronoiPoints = points.stream().map(VoronoiPoint::new).collect(Collectors.toList());
-        //System.out.println("Points sorted");
         VoronoiDiagram voronoiDiagram = new VoronoiDiagram(voronoiPoints);
 
         long endTime = System.nanoTime();
@@ -254,8 +269,11 @@ public class Main {
         System.out.println(duration / 1000000000.0 + " seconds");
 
         System.out.println("Diagram finished");
-        PointsPanel panel = printNeighbours();
-        panel.setDiagram(voronoiDiagram);
-        System.out.println("Painting finished");
+        PointsPanel bruteForcePanel = printNeighbours();
+        PointsPanel voronoiPanel = printNeighbours(voronoiDiagram);
+        System.out.println("Painting finished");*/
+
+        MainForm form = new MainForm();
+
     }
 }

@@ -19,24 +19,38 @@ public class PointsPanel extends JPanel {
     public static final Line right = new Line(MAX, -MAX, MAX, MAX);
 
     private List<Point> points;
+
     private VoronoiDiagram diagram;
+    public static boolean printNeighbours = false;
+    public static boolean printConvexHull = false;
+    public static boolean printDiagram = false;
+
 
     public PointsPanel(List<Point> points) {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.points = points;
     }
 
+    public PointsPanel(VoronoiDiagram diagram) {
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        this.diagram = diagram;
+    }
+
     public void paintComponent(Graphics page) {
         super.paintComponent(page);
-        for (Point point : points)
-            point.draw(page);
+        if (points != null) {
+            for (Point point : points)
+                point.draw(page);
+        }
 
-        page.setColor(new Color(333333333));
-        printConvexHull(page);
+        if (diagram != null) {
+            if (printConvexHull) {
+                page.setColor(new Color(333333333));
+                printConvexHull(page);
+            }
 
-        page.setColor(new Color(0));
-        if (diagram != null)
             diagram.draw(page);
+        }
     }
 
     private void printConvexHull(Graphics page) {
@@ -48,9 +62,5 @@ public class PointsPanel extends JPanel {
         page.drawLine((int) diagram.convexHull.get(i).x, HEIGHT - (int) diagram.convexHull.get(i).y,
                 (int) diagram.convexHull.get(0).x, HEIGHT - (int) diagram.convexHull.get(0).y);
 
-    }
-
-    public void setDiagram(VoronoiDiagram diagram) {
-        this.diagram = diagram;
     }
 }
