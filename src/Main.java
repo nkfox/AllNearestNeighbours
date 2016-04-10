@@ -24,7 +24,7 @@ public class Main {
             //point.print();
             boolean ok = true;
             for (Point p : points) {
-                if (point.distanceTo(p) < 0.1) {
+                if (point.distanceTo(p) < 1) {
                     ok = false;
                     break;
                 }
@@ -102,13 +102,13 @@ public class Main {
         points.add(new Point(1184.0298406153163,392.86093994769914));
         points.add(new Point(1326.152612376465,64.46624806847228));*/
 
-        //circle
+        /*//circle
         //points.add(new Point(100+50*Math.sin(Math.PI*5/6),150+50*Math.cos(Math.PI*5/6)));
         points.add(new Point(300 + 50 * Math.cos(Math.PI / 6), 150 + 50 * Math.sin(Math.PI / 6)));
         points.add(new Point(300, 100));
         points.add(new Point(300, 200));
         points.add(new Point(350, 150));
-        points.add(new Point(300 + 50 * Math.sin(Math.PI / 4), 150 + 50 * Math.cos(Math.PI / 4)));
+        points.add(new Point(300 + 50 * Math.sin(Math.PI / 4), 150 + 50 * Math.cos(Math.PI / 4)));*/
 
         /*//one edge intersected twice
         points.add(new Point(83.02382472734023,302.3972688413379));
@@ -219,13 +219,23 @@ public class Main {
         } catch (Exception ignored) {
         }
         //points=points.subList(0, points.size() / 2);
+        points=points.subList(points.size() / 2, points.size());
+        points=points.subList(0, points.size() / 2);
+        points=points.subList(points.size() / 2, points.size());
+        points=points.subList(points.size() / 2, points.size());
+        points=points.subList(0, points.size() / 2);
+        points=points.subList(points.size() / 2, points.size());
+        points=points.subList(points.size() / 2, points.size());
+        points=points.subList(points.size() / 2, points.size());
+        points=points.subList(points.size() / 2, points.size());
+        points=points.subList(0, points.size() / 2);
         //points=points.subList(points.size() / 2, points.size());
-        System.out.println(points.size());
+        //System.out.println(points.size());
     }
 
     public static void main(String[] args) {
 
-        getRandomPoints(15);
+        getRandomPoints(5000);
         //getData();
         if (points.size() == 0) return;
 

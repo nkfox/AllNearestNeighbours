@@ -155,9 +155,9 @@ public class VoronoiDiagram {
 
         double currentY = PointsPanel.MAX;
 
-        int i=6;
+        int i=0;
         do {
-            //if (left.points.size() == 5 && right.points.size() == 5 && i--==0) break;
+            //if (left.points.size() == 4 && right.points.size() == 4 && i--==0) break;
             double leftY = getY(currentLeftEdge, currentLine);
             double rightY = getY(currentRightEdge, currentLine);
 
