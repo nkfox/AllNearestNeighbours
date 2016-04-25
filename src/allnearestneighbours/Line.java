@@ -63,4 +63,10 @@ public class Line {
                 endVertexIncluded && Math.abs(yRight - edge.endVertex.y) < epsilon ||
                 !endVertexIncluded && Math.abs(yLeft - edge.beginVertex.y) < epsilon;
     }
+
+    public double distanceTo(Point point){
+        double dist =  Math.abs(d*point.x-b*point.y+c*b-a*d)/Math.sqrt(d*d+b*b);
+        System.out.println(dist);
+        return dist;
+    }
 }

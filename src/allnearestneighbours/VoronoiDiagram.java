@@ -1,5 +1,7 @@
 package allnearestneighbours;
 
+import avltree.AVLTree;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,22 +13,20 @@ import java.util.List;
 public class VoronoiDiagram {
 
     List<VoronoiPoint> points;
-    List<VoronoiPoint> convexHull;
+    AVLTree<VoronoiPoint> convexHull;
 
     public VoronoiDiagram(List<VoronoiPoint> points) {
         this.points = points;
-        this.convexHull = new ArrayList<>();
         buildVoronoiDiagram();
     }
 
     private void buildVoronoiDiagram() {
         if (points.size() == 1) {
-            convexHull.add(points.get(0));
+            convexHull = new AVLTree<>(new AVLTree.AVLNode<>(points.get(0)));
             return;
         }
         VoronoiDiagram left = new VoronoiDiagram(points.subList(0, points.size() / 2));
         VoronoiDiagram right = new VoronoiDiagram(points.subList(points.size() / 2, points.size()));
-        //System.out.println(left.points.size() + " " + right.points.size());
         merge(left, right);
     }
 
@@ -35,15 +35,14 @@ public class VoronoiDiagram {
             firstStepOfMerging(left, right);
         } else {
             List<VoronoiEdge> edges = findConvexHull(left, right);
-            constructDividingChain(left, right, edges.get(0), edges.get(1));
+            //constructDividingChain(left, right, edges.get(0), edges.get(1));
         }
     }
 
     private void firstStepOfMerging(VoronoiDiagram left, VoronoiDiagram right) {
         VoronoiPoint begin = left.points.get(0);
         VoronoiPoint end = right.points.get(0);
-        convexHull.add(begin);
-        convexHull.add(end);
+        convexHull = AVLTree.join(left.convexHull,right.convexHull);
         VoronoiEdge edge = VoronoiEdge.getPerpendicularEdge(begin, end);
         if (edge.leftSide.equals(end))
             edge = edge.reverse;
@@ -54,6 +53,24 @@ public class VoronoiDiagram {
     }
 
     private List<VoronoiEdge> findConvexHull(VoronoiDiagram left, VoronoiDiagram right) {
+        List<VoronoiPoint> upperEdge = AVLTree.getUpperPoints(left.convexHull, right.convexHull);
+        List<VoronoiPoint> lowerEdge = AVLTree.getLowerPoints(left.convexHull, right.convexHull);
+        combineConvexHulls(left, right, upperEdge.get(0), upperEdge.get(1),lowerEdge.get(0), lowerEdge.get(1));
+
+        List<VoronoiEdge> edges = new ArrayList<>();
+        edges.add(new VoronoiEdge(upperEdge.get(0),upperEdge.get(1),null,null));
+        edges.add(new VoronoiEdge(lowerEdge.get(0), lowerEdge.get(1),null,null));
+        return edges;
+    }
+
+    private void combineConvexHulls(VoronoiDiagram left, VoronoiDiagram right, VoronoiPoint upperSupportLeft, VoronoiPoint upperSupportRight,
+                                    VoronoiPoint lowerSupportLeft, VoronoiPoint lowerSupportRight) {
+        left.convexHull.retainSegment(lowerSupportLeft, upperSupportLeft);
+        right.convexHull.retainSegment(upperSupportRight, lowerSupportRight);
+        convexHull = AVLTree.join(left.convexHull, right.convexHull);
+    }
+
+    /*private List<VoronoiEdge> findConvexHull(VoronoiDiagram left, VoronoiDiagram right) {
         int i = 0;
         while (i < left.convexHull.size() - 1 && (left.convexHull.get(i).x < left.convexHull.get(i + 1).x ||
                 Math.abs(left.convexHull.get(i).x - left.convexHull.get(i + 1).x) < 0.00001 &&
@@ -137,7 +154,7 @@ public class VoronoiDiagram {
         while (i < left.convexHull.size())
             convexHull.add(left.convexHull.get(i++));
 
-    }
+    }*/
 
     private void constructDividingChain(VoronoiDiagram left, VoronoiDiagram right, VoronoiEdge upperEdge, VoronoiEdge lowerEdge) {
         Line currentLine = new Line(upperEdge.beginVertex, upperEdge.endVertex, true);
@@ -267,7 +284,7 @@ public class VoronoiDiagram {
 
     private static VoronoiEdge buildNewEdge(Line currentLine,double beginY, double endY, VoronoiPoint currentRightPoint,
                                             VoronoiPoint currentLeftPoint, VoronoiEdge intersected,VoronoiEdge last){
-        if (Math.abs(currentLine.d)>0.00001)
+        if (Math.abs(currentLine.d)>0.0001)
             return new VoronoiEdge(new Point(currentLine.findX(beginY), beginY),
                 new Point(currentLine.findX(endY), endY), currentRightPoint, currentLeftPoint);
         return new VoronoiEdge(new Point(last.endVertex.x, beginY), new Point(currentLine.intersection(
@@ -473,7 +490,7 @@ public class VoronoiDiagram {
                 //System.out.println("\n");
             }
         }
-        //System.out.println(k);
+        System.out.println(k);
     }
 
     public void update(Graphics page) {

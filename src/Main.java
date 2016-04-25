@@ -1,4 +1,5 @@
 import allnearestneighbours.*;
+import avltree.AVLTree;
 
 import javax.swing.*;
 import java.io.FileInputStream;
@@ -196,7 +197,7 @@ public class Main {
             }
         } catch (Exception ignored) {
         }
-        //points=points.subList(0, points.size() / 2);
+        //points = points.subList(0, points.size() / 2);
         //points=points.subList(points.size() / 2, points.size());
     }
 
@@ -243,24 +244,23 @@ public class Main {
         voronoiDiagram = new VoronoiDiagram(voronoiPoints);
 
         long endTime = System.nanoTime();
-        double duration = (endTime - startTime)/ 1000000000.0;
-        System.out.println(duration  + " seconds");
+        double duration = (endTime - startTime) / 1000000000.0;
+        System.out.println(duration + " seconds");
         PointsPanel voronoiPanel = printNeighbours(voronoiDiagram);
         return duration;
     }
 
     public static void main(String[] args) {
 
-        /*getRandomPoints(500);
-        //getData();
+        /*//getRandomPoints(4000);
+        getData();
         if (points.size() == 0) return;
 
-        getNearestNeighboursBruteForce();
+        //getNearestNeighboursBruteForce();
 
         long startTime = System.nanoTime();
         Collections.sort(points);
-        *//*for (Point point: points)
-        point.print();*//*
+        points.forEach(Point::print);
         List<VoronoiPoint> voronoiPoints = points.stream().map(VoronoiPoint::new).collect(Collectors.toList());
         VoronoiDiagram voronoiDiagram = new VoronoiDiagram(voronoiPoints);
 
@@ -269,11 +269,11 @@ public class Main {
         System.out.println(duration / 1000000000.0 + " seconds");
 
         System.out.println("Diagram finished");
-        PointsPanel bruteForcePanel = printNeighbours();
+        //PointsPanel bruteForcePanel = printNeighbours();
         PointsPanel voronoiPanel = printNeighbours(voronoiDiagram);
         System.out.println("Painting finished");*/
 
-        MainForm form = new MainForm();
+        //MainForm form = new MainForm();
 
     }
 }

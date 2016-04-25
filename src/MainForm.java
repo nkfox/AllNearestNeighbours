@@ -89,11 +89,11 @@ public class MainForm extends JFrame {
                 JFrame pointsFrame = new JFrame("Help");
                 JTextArea area = new JTextArea("Help\n\nMain form has text area and buttons.\nText area shows info about all events\n"+
                 "\'Generate points\' button randomly generate points. The amount has to be entered in the field below. "+
-                "If the field in filled incorrectly, the program announces about it and set default number of points (10).\n"+
+                "If the field in filled incorrectly,\nthe program announces about it and set default number of points (10).\n"+
                 "Button \'Read from file\' is the other method to get points. The amount of points that are read are shown in the text area.\n\n"+
                 "\'Brute force\' button gets all nearest neighbours by trying all pairs of points. Draw all points and connect them "+
                 "with trein nearest neighbours.\n\'Voronoi diagram\' button gets all nearest neighbours by building voronoi diagram."+
-                "Three checkboxes below give the opportunity to choose what information are shown in the picture: neighbours, "+
+                "Three checkboxes below give the opportunity to choose\nwhat information are shown in the picture: neighbours, "+
                 "convex hull and/or voronoi diagram.\nTime of both algorithms are shown in the ext area.\n");
                 area.setEditable(false);
                 pointsFrame.getContentPane().add(area);
@@ -101,5 +101,9 @@ public class MainForm extends JFrame {
                 pointsFrame.setVisible(true);
             }
         });
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
     }
 }

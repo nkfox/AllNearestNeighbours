@@ -22,8 +22,8 @@ public class PointsPanel extends JPanel {
 
     private VoronoiDiagram diagram;
     public static boolean printNeighbours = false;
-    public static boolean printConvexHull = false;
-    public static boolean printDiagram = false;
+    public static boolean printConvexHull = true;
+    public static boolean printDiagram = true;
 
 
     public PointsPanel(List<Point> points) {

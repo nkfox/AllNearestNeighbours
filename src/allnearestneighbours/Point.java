@@ -7,7 +7,7 @@ import java.util.Random;
  * Created by Nataliia Kozoriz on 19.03.2016.
  * All info about point
  */
-public class Point implements Comparable<Point> {
+public class Point implements Comparable {
     public double x;
     public double y;
     Point nearestNeighbour;
@@ -31,9 +31,13 @@ public class Point implements Comparable<Point> {
         this.y = Math.random() * PointsPanel.HEIGHT;
     }
 
-    public int compareTo(Point point) {
-        if (x > point.x || x == point.x && y < point.y) return 1;
-        if (x == point.x && y == point.y) return 0;
+    public int compareTo(Object obj) {
+        if (obj instanceof Point){
+            Point point = (Point)obj;
+            if (x > point.x || x == point.x && y < point.y) return 1;
+            if (x == point.x && y == point.y) return 0;
+            return -1;
+        }
         return -1;
     }
 
@@ -43,7 +47,7 @@ public class Point implements Comparable<Point> {
     }
 
     public void print() {
-        System.out.println("(" + x + "," + y + ")");
+        System.out.println(x + " " + y);
     }
 
     public void printNeighbour() {

@@ -15,4 +15,5 @@ public class VoronoiPoint extends Point {
     public VoronoiPoint(Point point) {
         super(point.x, point.y,point.color);
     }
+
 }
