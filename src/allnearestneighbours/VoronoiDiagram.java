@@ -1,5 +1,6 @@
 package allnearestneighbours;
 
+import avltree.AVLNode;
 import avltree.AVLTree;
 
 import java.awt.*;
@@ -22,7 +23,7 @@ public class VoronoiDiagram {
 
     private void buildVoronoiDiagram() {
         if (points.size() == 1) {
-            convexHull = new AVLTree<>(new AVLTree.AVLNode<>(points.get(0)));
+            convexHull = new AVLTree<>(new AVLNode<>(points.get(0)));
             return;
         }
         VoronoiDiagram left = new VoronoiDiagram(points.subList(0, points.size() / 2));

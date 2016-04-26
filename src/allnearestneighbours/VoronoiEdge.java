@@ -42,7 +42,7 @@ public class VoronoiEdge {
         findNewPoint(line, PointsPanel.left, middle, begin, end);
         findNewPoint(line, PointsPanel.right, middle, begin, end);
 
-        if (polarAngle(begin, p1) > polarAngle(begin, end))
+        if (Point.polarAngle(begin, p1) > Point.polarAngle(begin, end))
             return new VoronoiEdge(begin, end, p1, p2);
         else return new VoronoiEdge(begin, end, p2, p1);
     }
@@ -79,12 +79,6 @@ public class VoronoiEdge {
                 }
             }
         }
-    }
-
-    public static double polarAngle(Point center, Point p) {
-        double alpha = Math.atan2(p.y - center.y, p.x - center.x);
-        if (alpha < 0) alpha += 2 * Math.PI;
-        return alpha;
     }
 
     public boolean isLowerThan(VoronoiEdge edge) {

@@ -1,5 +1,7 @@
 import allnearestneighbours.*;
+import avltree.AVLNode;
 import avltree.AVLTree;
+import avltree.ComparableComparator;
 
 import javax.swing.*;
 import java.io.FileInputStream;
@@ -274,6 +276,41 @@ public class Main {
         System.out.println("Painting finished");*/
 
         //MainForm form = new MainForm();
+
+        List<VoronoiPoint> p = new ArrayList<>();
+        p.add(new VoronoiPoint(0,0));
+        p.add(new VoronoiPoint(1,0));
+        p.add(new VoronoiPoint(2,3));
+        p.add(new VoronoiPoint(3,2));
+        p.add(new VoronoiPoint(4,4));
+        AVLTree<VoronoiPoint> a1 = new AVLTree<>(new AVLNode<>(p.get(0)));
+        AVLTree<VoronoiPoint> a2 = new AVLTree<>(new AVLNode<>(p.get(1)));
+        AVLTree<VoronoiPoint> a3 = new AVLTree<>(new AVLNode<>(p.get(2)));
+        AVLTree<VoronoiPoint> a4 = new AVLTree<>(new AVLNode<>(p.get(3)));
+        AVLTree<VoronoiPoint> a5 = new AVLTree<>(new AVLNode<>(p.get(4)));
+
+        a1 = AVLTree.join(a1,a2);
+        AVLNode<VoronoiPoint> ll = AVLNode.findMin(a1.getHead());
+        a1.setComparator(new ComparableComparator<>(ll.value, ll.next.value));
+
+        a3 = AVLTree.join(a3,a4);
+        ll = AVLNode.findMin(a3.getHead());
+        a3.setComparator(new ComparableComparator<>(ll.value, ll.next.value));
+
+        a3.retainSegment(p.get(2), p.get(3));
+        a3 = AVLTree.join(a3,a5);
+        ll = AVLNode.findMin(a3.getHead());
+        a3.setComparator(new ComparableComparator<>(ll.value, ll.next.value));
+
+        a1.retainSegment(p.get(0), p.get(1));
+        a3.retainSegment(p.get(3), p.get(2));
+        a1 = AVLTree.join(a1,a3);
+        ll = AVLNode.findMin(a1.getHead());
+        a1.setComparator(new ComparableComparator<>(ll.value, ll.next.value));
+
+        for(VoronoiPoint pp:a1){
+            pp.print();
+        }
 
     }
 }

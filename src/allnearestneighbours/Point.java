@@ -84,5 +84,9 @@ public class Point implements Comparable {
         return point instanceof Point && Math.abs(x - ((Point) point).x) < epsilon && Math.abs(y - ((Point) point).y) < epsilon;
     }
 
-
+    public static double polarAngle(Point center, Point p) {
+        double alpha = Math.atan2(p.y - center.y, p.x - center.x);
+        if (alpha < 0) alpha += 2 * Math.PI;
+        return alpha;
+    }
 }
