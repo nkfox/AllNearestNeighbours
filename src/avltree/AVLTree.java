@@ -70,7 +70,7 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
             return left;
         }
 
-        return new AVLTree<>(AVLNode.join(left.head, right.head), left.getComparator());
+        return new AVLTree<>(AVLNode.join(left.head, right.head));
     }
 
     public void retainInterval(E min, E max, boolean minOpen, boolean maxOpen) {
@@ -139,8 +139,7 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
             @SuppressWarnings("unchecked")
             E e = (E) o;
             return find(head, e) != null;
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             return false;
         }
     }
@@ -157,8 +156,7 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
             int prevSize = this.size();
             head = remove(head, e);
             return prevSize != this.size();
-        }
-        catch (ClassCastException e) {
+        } catch (ClassCastException e) {
             return false;
         }
     }
@@ -186,15 +184,13 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
         if (comparator.compare(value, p.value) < 0) {
             if (p.left != null) {
                 p.left = insert(p.left, value);
-            }
-            else {
+            } else {
                 AVLNode.setLeft(p, new AVLNode<>(value, null, null, p.prev, p));
             }
         } else {
             if (p.right != null) {
                 p.right = insert(p.right, value);
-            }
-            else {
+            } else {
                 AVLNode.setRight(p, new AVLNode<>(value, null, null, p, p.next));
             }
         }
@@ -210,8 +206,7 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
         int cmp = comparator.compare(value, p.value);
         if (cmp < 0) {
             return find(p.left, value);
-        }
-        else if (cmp > 0) {
+        } else if (cmp > 0) {
             return find(p.right, value);
         }
 
@@ -267,19 +262,16 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
             if (cmp < 0 || cmp == 0 && !valueLeft) {
                 if (right == null) {
                     node.parent = null;
-                }
-                else {
+                } else {
                     AVLNode.setLeft(right, node);
                 }
 
                 right = node;
                 node = node.left;
-            }
-            else {
+            } else {
                 if (left == null) {
                     node.parent = null;
-                }
-                else {
+                } else {
                     AVLNode.setRight(left, node);
                 }
 
@@ -288,8 +280,14 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
             }
         }
 
-        AVLNode.setNext(left, min);
-        AVLNode.setNext(max, right);
+        if (left != null) {
+            AVLNode.setNext(left, min);
+        }
+
+        if (right != null) {
+            AVLNode.setNext(max, right);
+        }
+
         AVLNode.setRight(left, null);
         AVLNode.setLeft(right, null);
         List<AVLNode<E>> res = new ArrayList<>();
@@ -332,31 +330,11 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
 
             if (next != null) {
                 head = AVLTree.this.remove(head, next.prev.value);
-            }
-            else {
+            } else {
                 head = null;
             }
 
             moved = false;
         }
-    }
-
-    public static List<VoronoiPoint> getUpperPoints(AVLTree<VoronoiPoint> leftCH, AVLTree<VoronoiPoint> rightCH){
-        /*AVLNode upperSupportLeft = leftCH.head;
-        AVLNode upperSupportRight = rightCH.head;
-        boolean changedLeft = true, changedRight = true;
-        while (changedLeft || changedRight){
-            // find case: leftLeft, rightRight, leftRightLessPi, leftRightGreaterPi
-            //recount changeLeft, changeRight
-        }
-        List<VoronoiPoint> upper =  new ArrayList<>();
-        upper.add(upperSupportLeft.value);
-        upper.add(upperSupportRight.value);*/
-
-        return null;
-    }
-
-    public static List<VoronoiPoint> getLowerPoints(AVLTree<VoronoiPoint> leftCH, AVLTree<VoronoiPoint> rightCH){
-        return null;
     }
 }

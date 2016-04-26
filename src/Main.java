@@ -240,8 +240,8 @@ public class Main {
     public static double getNearestNeighboursVoronoi() {
         long startTime = System.nanoTime();
         Collections.sort(points);
-        /*for (Point point: points)
-        point.print();*/
+        /*for (Point point : points)
+            point.print();*/
         List<VoronoiPoint> voronoiPoints = points.stream().map(VoronoiPoint::new).collect(Collectors.toList());
         voronoiDiagram = new VoronoiDiagram(voronoiPoints);
 
@@ -275,9 +275,9 @@ public class Main {
         PointsPanel voronoiPanel = printNeighbours(voronoiDiagram);
         System.out.println("Painting finished");*/
 
-        //MainForm form = new MainForm();
+        MainForm form = new MainForm();
 
-        List<VoronoiPoint> p = new ArrayList<>();
+        /*List<VoronoiPoint> p = new ArrayList<>();
         p.add(new VoronoiPoint(0,0));
         p.add(new VoronoiPoint(1,0));
         p.add(new VoronoiPoint(2,3));
@@ -297,20 +297,24 @@ public class Main {
         ll = AVLNode.findMin(a3.getHead());
         a3.setComparator(new ComparableComparator<>(ll.value, ll.next.value));
 
-        a3.retainSegment(p.get(2), p.get(3));
+        List<VoronoiPoint> upper = VoronoiDiagram.getUpperPoints(a3,a5);
+        List<VoronoiPoint> lower = VoronoiDiagram.getLowerPoints(a3,a5);
+        a3.retainSegment(upper.get(0),lower.get(0));
         a3 = AVLTree.join(a3,a5);
         ll = AVLNode.findMin(a3.getHead());
         a3.setComparator(new ComparableComparator<>(ll.value, ll.next.value));
 
-        a1.retainSegment(p.get(0), p.get(1));
-        a3.retainSegment(p.get(3), p.get(2));
+        upper = VoronoiDiagram.getUpperPoints(a1,a3);
+        lower = VoronoiDiagram.getLowerPoints(a1,a3);
+        a1.retainSegment(upper.get(0),lower.get(0));
+        a3.retainSegment(lower.get(1),upper.get(1));
         a1 = AVLTree.join(a1,a3);
         ll = AVLNode.findMin(a1.getHead());
         a1.setComparator(new ComparableComparator<>(ll.value, ll.next.value));
 
         for(VoronoiPoint pp:a1){
             pp.print();
-        }
+        }*/
 
     }
 }

@@ -21,7 +21,7 @@ public class PointsPanel extends JPanel {
     private List<Point> points;
 
     private VoronoiDiagram diagram;
-    public static boolean printNeighbours = false;
+    public static boolean printNeighbours = true;
     public static boolean printConvexHull = true;
     public static boolean printDiagram = true;
 
@@ -54,13 +54,16 @@ public class PointsPanel extends JPanel {
     }
 
     private void printConvexHull(Graphics page) {
-        int i;
-        for (i = 0; i < diagram.convexHull.size() - 1; i++) {
-            page.drawLine((int) diagram.convexHull.get(i).x, HEIGHT - (int) diagram.convexHull.get(i).y,
-                    (int) diagram.convexHull.get(i + 1).x, HEIGHT - (int) diagram.convexHull.get(i + 1).y);
+        VoronoiPoint first = null, prev = null;
+        for(VoronoiPoint point: diagram.convexHull) {
+            if (first == null ) first = point;
+            if (prev!=null)
+            page.drawLine((int) point.x, HEIGHT - (int) point.y,
+                    (int) prev.x, HEIGHT - (int) prev.y);
+            prev = point;
         }
-        page.drawLine((int) diagram.convexHull.get(i).x, HEIGHT - (int) diagram.convexHull.get(i).y,
-                (int) diagram.convexHull.get(0).x, HEIGHT - (int) diagram.convexHull.get(0).y);
+        page.drawLine((int) first.x, HEIGHT - (int) first.y,
+                (int) prev.x, HEIGHT - (int) prev.y);
 
     }
 }

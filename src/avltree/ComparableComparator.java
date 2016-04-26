@@ -28,19 +28,31 @@ public class ComparableComparator<VoronoiPoint> implements Comparator<VoronoiPoi
             throw new NullPointerException();
         }
 
-        double d1 = ((Point)p1).distanceTo((Point)startPoint);
-        double d2 = ((Point)p2).distanceTo((Point)startPoint);
+        if (p1.equals(p2)) {
+            return 0;
+        }
+
+        if (p1.equals(startPoint)) {
+            return -1;
+        }
+
+        if (p2.equals(startPoint)) {
+            return 1;
+        }
 
         double angle1 = Point.polarAngle((Point)startPoint,(Point)p1);
         double angle2 = Point.polarAngle((Point)startPoint,(Point)p2);
-        if (angle1>direction) angle1 -= 2*Math.PI;
-        if (angle2>direction) angle2 -= 2*Math.PI;
 
-        double epsilon = 0.001;
-        if (Math.abs(d1)<epsilon) return -1;
-        if (Math.abs(d2)<epsilon) return -1;
-        if (angle1<angle2 || angle1 == angle2 && d1<d2) return -1;
-        if (angle1 == angle2 && d1==d2) return 0;
-        return 1;
+        if (angle1 > direction) angle1 -= 2*Math.PI;
+        if (angle2 > direction) angle2 -= 2*Math.PI;
+
+        if (angle1 == angle2) {
+            double d1 = ((Point)p1).distanceTo((Point)startPoint);
+            double d2 = ((Point)p2).distanceTo((Point)startPoint);
+
+            return Double.compare(d1, d2);
+        }
+
+        return Double.compare(angle1, angle2);
     }
 }

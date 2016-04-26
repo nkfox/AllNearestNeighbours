@@ -17,6 +17,10 @@ public class Line {
         b = x2 - x1;
         c = y1;
         d = y2 - y1;
+        if (d < 0) {
+            d = -d;
+            b = -b;
+        }
     }
 
     public Line(Point p1, Point p2, boolean isPerpendicular) {
@@ -28,6 +32,10 @@ public class Line {
             d = -temp;
             a = middle.x;
             c = middle.y;
+            if (d < 0) {
+                d = -d;
+                b = -b;
+            }
         }
     }
 
@@ -64,9 +72,13 @@ public class Line {
                 !endVertexIncluded && Math.abs(yLeft - edge.beginVertex.y) < epsilon;
     }
 
-    public double distanceTo(Point point){
-        double dist =  Math.abs(d*point.x-b*point.y+c*b-a*d)/Math.sqrt(d*d+b*b);
+    public double distanceTo(Point point) {
+        double dist = Math.abs(d * point.x - b * point.y + c * b - a * d) / Math.sqrt(d * d + b * b);
         System.out.println(dist);
         return dist;
+    }
+
+    public boolean isLower(VoronoiPoint point) {
+        return findY(point.x) - point.y < 0;
     }
 }
