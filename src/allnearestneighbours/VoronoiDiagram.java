@@ -81,7 +81,8 @@ public class VoronoiDiagram {
         while (changedLeft || changedRight) {
             changedLeft = false;
             changedRight = false;
-            if (leftCH.size() != 1) {
+            while (leftCH.size() != 1) {
+                changedLeft = false;
                 int situationLeft = upperSupportLeft.value.getSituation(upperSupportRight.value, upperSupportLeft.prev.value,
                         upperSupportLeft.next.value);
                 int toGo = whereToGo(situationLeft, findUpper);
@@ -91,7 +92,8 @@ public class VoronoiDiagram {
                 }
             }
 
-            if (rightCH.size() != 1) {
+            while (rightCH.size() != 1) {
+                changedRight = false;
                 int situationRight = upperSupportRight.value.getSituation(upperSupportLeft.value, upperSupportRight.next.value,
                         upperSupportRight.prev.value);
                 int toGo = whereToGo(situationRight, !findUpper);
@@ -111,16 +113,16 @@ public class VoronoiDiagram {
         switch (situation) {
             case 1:
                 if (findUpper) return 0;
-                else return 2;
+                else return 1;
             case 2:
-                if (findUpper) return 1;
+                if (findUpper) return 2;
                 else return 0;
             case 3:
-                if (findUpper) return 1;
-                else return 2;
-            default:
                 if (findUpper) return 2;
                 else return 1;
+            default:
+                if (findUpper) return 1;
+                else return 2;
         }
     }
 

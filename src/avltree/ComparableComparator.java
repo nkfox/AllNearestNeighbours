@@ -43,8 +43,8 @@ public class ComparableComparator<VoronoiPoint> implements Comparator<VoronoiPoi
         double angle1 = Point.polarAngle((Point)startPoint,(Point)p1);
         double angle2 = Point.polarAngle((Point)startPoint,(Point)p2);
 
-        if (angle1 > direction) angle1 -= 2*Math.PI;
-        if (angle2 > direction) angle2 -= 2*Math.PI;
+        if (angle1 >= direction) angle1 -= 2*Math.PI;
+        if (angle2 >= direction) angle2 -= 2*Math.PI;
 
         if (angle1 == angle2) {
             double d1 = ((Point)p1).distanceTo((Point)startPoint);
