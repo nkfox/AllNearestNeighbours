@@ -139,7 +139,7 @@ public class VoronoiDiagram {
     private void combineConvexHulls(VoronoiDiagram left, VoronoiDiagram right, VoronoiPoint upperSupportLeft, VoronoiPoint upperSupportRight,
                                     VoronoiPoint lowerSupportLeft, VoronoiPoint lowerSupportRight) {
         if (left.convexHull.size() != 1)
-            left.convexHull.retainSegment(lowerSupportLeft,upperSupportLeft);
+            left.convexHull.retainSegment(upperSupportLeft,lowerSupportLeft);
         if (right.convexHull.size() != 1)
             right.convexHull.retainSegment(lowerSupportRight,upperSupportRight);
         convexHull = AVLTree.join(left.convexHull, right.convexHull);
