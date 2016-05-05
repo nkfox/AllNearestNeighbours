@@ -89,8 +89,7 @@ public class Main {
     public static double getNearestNeighboursVoronoi() {
         long startTime = System.nanoTime();
         Collections.sort(points);
-        /*for (Point point : points)
-            point.print();*/
+        //points.forEach(Point::print);
         List<VoronoiPoint> voronoiPoints = points.stream().map(VoronoiPoint::new).collect(Collectors.toList());
         voronoiDiagram = new VoronoiDiagram(voronoiPoints);
 

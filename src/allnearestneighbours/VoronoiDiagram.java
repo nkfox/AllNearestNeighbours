@@ -1,9 +1,5 @@
 package allnearestneighbours;
 
-import avltree.AVLNode;
-import avltree.AVLTree;
-import avltree.ComparableComparator;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +11,7 @@ import java.util.List;
 public class VoronoiDiagram {
 
     List<VoronoiPoint> points;
-    AVLTree<VoronoiPoint> convexHull;
+    ConvexHull convexHull;
 
     public VoronoiDiagram(List<VoronoiPoint> points) {
         this.points = points;
@@ -24,7 +20,7 @@ public class VoronoiDiagram {
 
     private void buildVoronoiDiagram() {
         if (points.size() == 1) {
-            convexHull = new AVLTree<>(new AVLNode<>(points.get(0)));
+            convexHull = new ConvexHull(points.get(0));
             return;
         }
         VoronoiDiagram left = new VoronoiDiagram(points.subList(0, points.size() / 2));
@@ -44,8 +40,7 @@ public class VoronoiDiagram {
     private void firstStepOfMerging(VoronoiDiagram left, VoronoiDiagram right) {
         VoronoiPoint begin = left.points.get(0);
         VoronoiPoint end = right.points.get(0);
-        convexHull = AVLTree.join(left.convexHull, right.convexHull);
-        convexHull.setComparator(new ComparableComparator<>(begin, end));
+        convexHull = ConvexHull.merge(left.convexHull, right.convexHull);
         VoronoiEdge edge = VoronoiEdge.getPerpendicularEdge(begin, end);
         if (edge.leftSide.equals(end))
             edge = edge.reverse;
@@ -56,104 +51,14 @@ public class VoronoiDiagram {
     }
 
     private List<VoronoiEdge> findConvexHull(VoronoiDiagram left, VoronoiDiagram right) {
-        List<VoronoiPoint> upperEdge = getUpperPoints(left.convexHull, right.convexHull);
-        List<VoronoiPoint> lowerEdge = getLowerPoints(left.convexHull, right.convexHull);
-        combineConvexHulls(left, right, upperEdge.get(0), upperEdge.get(1), lowerEdge.get(0), lowerEdge.get(1));
+        List<VoronoiPoint> upperEdge = ConvexHull.getUpperSupport(left.convexHull, right.convexHull);
+        List<VoronoiPoint> lowerEdge = ConvexHull.getLowerSupport(left.convexHull, right.convexHull);
+        convexHull = ConvexHull.merge(left.convexHull, right.convexHull);
 
         List<VoronoiEdge> edges = new ArrayList<>();
         edges.add(new VoronoiEdge(upperEdge.get(0), upperEdge.get(1), null, null));
         edges.add(new VoronoiEdge(lowerEdge.get(0), lowerEdge.get(1), null, null));
         return edges;
-    }
-
-    public static List<VoronoiPoint> getUpperPoints(AVLTree<VoronoiPoint> leftCH, AVLTree<VoronoiPoint> rightCH) {
-        return getSupportPoints(leftCH, rightCH, true);
-    }
-
-    public static List<VoronoiPoint> getLowerPoints(AVLTree<VoronoiPoint> leftCH, AVLTree<VoronoiPoint> rightCH) {
-        return getSupportPoints(leftCH, rightCH, false);
-    }
-
-    private static List<VoronoiPoint> getSupportPoints(AVLTree<VoronoiPoint> leftCH, AVLTree<VoronoiPoint> rightCH, boolean findUpper) {
-        AVLNode<VoronoiPoint> upperSupportLeft = leftCH.getHead();
-        AVLNode<VoronoiPoint> upperSupportRight = rightCH.getHead();
-        boolean changedLeft = true, changedRight = true;
-        boolean firstLeft = true, firstRight = true;
-        boolean headLeft = false, headRight = false;
-        while (changedLeft || changedRight) {
-            changedLeft = false;
-            changedRight = false;
-            if (leftCH.size() != 1) {
-                changedLeft = false;
-                int situationLeft = upperSupportLeft.value.getSituation(upperSupportRight.value, upperSupportLeft.prev.value,
-                        upperSupportLeft.next.value);
-                int toGo = whereToGo(situationLeft, findUpper);
-                if (toGo != 0) {
-                    changedLeft = true;
-                    headLeft = headLeft || !firstLeft && upperSupportLeft.equals(leftCH.getHead());
-                    upperSupportLeft = step(upperSupportLeft, toGo == 1, headLeft);
-                    firstLeft = false;
-                }
-            }
-
-            if (rightCH.size() != 1) {
-                changedRight = false;
-                int situationRight = upperSupportRight.value.getSituation(upperSupportLeft.value, upperSupportRight.next.value,
-                        upperSupportRight.prev.value);
-                int toGo = whereToGo(situationRight, !findUpper);
-                if (toGo != 0) {
-                    headRight = headRight || !firstRight && upperSupportRight.equals(rightCH.getHead());
-                    upperSupportRight = step(upperSupportRight, toGo == 1, headRight);
-                    changedRight = true;
-                    firstRight = false;
-                }
-            }
-        }
-        List<VoronoiPoint> support = new ArrayList<>();
-        support.add(upperSupportLeft.value);
-        support.add(upperSupportRight.value);
-        return support;
-    }
-
-    private static int whereToGo(int situation, boolean findUpper) {
-        switch (situation) {
-            case 1:
-                if (findUpper) return 0;
-                else return 1;
-            case 2:
-                if (findUpper) return 2;
-                else return 0;
-            case 3:
-                if (findUpper) return 2;
-                else return 1;
-            default:
-                if (findUpper) return 1;
-                else return 2;
-        }
-    }
-
-    private static AVLNode<VoronoiPoint> step(AVLNode<VoronoiPoint> node, boolean stepLeft, boolean goToNeighbour) {
-        if (stepLeft) {
-            if (goToNeighbour) return node.prev;
-            if (node.left == null && (node.parent == null || node.parent.left == node)) return node.prev;
-            if (node.left == null) return node.parent;
-            return node.left;
-        } else {
-            if (goToNeighbour) return node.next;
-            if (node.right == null && (node.parent == null || node.parent.right == node)) return node.next;
-            if (node.right == null) return node.parent;
-            return node.right;
-        }
-    }
-
-    private void combineConvexHulls(VoronoiDiagram left, VoronoiDiagram right, VoronoiPoint upperSupportLeft, VoronoiPoint upperSupportRight,
-                                    VoronoiPoint lowerSupportLeft, VoronoiPoint lowerSupportRight) {
-        if (left.convexHull.size() != 1)
-            left.convexHull.retainSegment(upperSupportLeft, lowerSupportLeft);
-        if (right.convexHull.size() != 1)
-            right.convexHull.retainSegment(lowerSupportRight, upperSupportRight);
-        convexHull = AVLTree.join(left.convexHull, right.convexHull);
-        convexHull.setComparator(new ComparableComparator<>(convexHull.get(0), convexHull.get(1)));
     }
 
     private void constructDividingChain(VoronoiDiagram left, VoronoiDiagram right, VoronoiEdge upperEdge, VoronoiEdge lowerEdge) {

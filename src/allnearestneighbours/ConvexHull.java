@@ -47,22 +47,19 @@ public class ConvexHull extends AbstractCollection<VoronoiPoint> implements Coll
             while (!resFound) {
                 resFound = true;
                 if (!leftMin.equals(leftUpper.value) && support.isLower(leftUpper.prev.value)) {
-                    leftUpper = leftUpper.left == null ? leftUpper.left : leftUpper.prev;
+                    leftUpper = leftUpper.left != null ? leftUpper.left : leftUpper.prev;
                     support = new Line(leftUpper.value, rightUpper.value);
                     resFound = false;
-                }
-                else if (!leftMax.equals(leftUpper.value) && !support.isHigher(leftUpper.next.value)) {
-                    leftUpper = leftUpper.right == null ? leftUpper.right : leftUpper.next;
+                } else if (!leftMax.equals(leftUpper.value) && !support.isHigher(leftUpper.next.value)) {
+                    leftUpper = leftUpper.right != null ? leftUpper.right : leftUpper.next;
                     support = new Line(leftUpper.value, rightUpper.value);
                     resFound = false;
-                }
-                else if (!rightMax.equals(rightUpper.value) && support.isLower(rightUpper.next.value)) {
-                    rightUpper = rightUpper.right == null ? rightUpper.right : rightUpper.next;
+                } else if (!rightMax.equals(rightUpper.value) && support.isLower(rightUpper.next.value)) {
+                    rightUpper = rightUpper.right != null ? rightUpper.right : rightUpper.next;
                     support = new Line(leftUpper.value, rightUpper.value);
                     resFound = false;
-                }
-                else if (!rightMin.equals(rightUpper.value) && !support.isHigher(rightUpper.prev.value)) {
-                    rightUpper = rightUpper.left == null ? rightUpper.left : rightUpper.prev;
+                } else if (!rightMin.equals(rightUpper.value) && !support.isHigher(rightUpper.prev.value)) {
+                    rightUpper = rightUpper.left != null ? rightUpper.left : rightUpper.prev;
                     support = new Line(leftUpper.value, rightUpper.value);
                     resFound = false;
                 }
@@ -94,22 +91,19 @@ public class ConvexHull extends AbstractCollection<VoronoiPoint> implements Coll
             while (!resFound) {
                 resFound = true;
                 if (!leftMax.equals(leftLower.value) && support.isHigher(leftLower.next.value)) {
-                    leftLower = leftLower.right == null ? leftLower.right : leftLower.next;
+                    leftLower = leftLower.right != null ? leftLower.right : leftLower.next;
                     support = new Line(leftLower.value, rightLower.value);
                     resFound = false;
-                }
-                else if (!leftMin.equals(leftLower.value) && !support.isLower(leftLower.prev.value)) {
-                    leftLower = leftLower.left == null ? leftLower.left : leftLower.prev;
+                } else if (!leftMin.equals(leftLower.value) && !support.isLower(leftLower.prev.value)) {
+                    leftLower = leftLower.left != null ? leftLower.left : leftLower.prev;
                     support = new Line(leftLower.value, rightLower.value);
                     resFound = false;
-                }
-                else if (!rightMin.equals(rightLower.value) && support.isHigher(rightLower.prev.value)) {
-                    rightLower = rightLower.left == null ? rightLower.left : rightLower.prev;
+                } else if (!rightMin.equals(rightLower.value) && support.isHigher(rightLower.prev.value)) {
+                    rightLower = rightLower.left != null ? rightLower.left : rightLower.prev;
                     support = new Line(leftLower.value, rightLower.value);
                     resFound = false;
-                }
-                else if (!rightMax.equals(rightLower.value) && !support.isLower(rightLower.next.value)) {
-                    rightLower = rightLower.right == null ? rightLower.right : rightLower.next;
+                } else if (!rightMax.equals(rightLower.value) && !support.isLower(rightLower.next.value)) {
+                    rightLower = rightLower.right != null ? rightLower.right : rightLower.next;
                     support = new Line(leftLower.value, rightLower.value);
                     resFound = false;
                 }
@@ -147,8 +141,7 @@ public class ConvexHull extends AbstractCollection<VoronoiPoint> implements Coll
         if (leftSupport != null && rightSupport != null && leftSupport.x == rightSupport.x) {
             if (leftSupport.y < rightSupport.y) {
                 rightLower.remove(rightSupport);
-            }
-            else {
+            } else {
                 leftLower.remove(leftSupport);
             }
 
@@ -172,8 +165,7 @@ public class ConvexHull extends AbstractCollection<VoronoiPoint> implements Coll
         if (leftSupport != null && rightSupport != null && leftSupport.x == rightSupport.x) {
             if (leftSupport.y > rightSupport.y) {
                 rightUpper.remove(rightSupport);
-            }
-            else {
+            } else {
                 leftUpper.remove(leftSupport);
             }
 
@@ -215,11 +207,9 @@ public class ConvexHull extends AbstractCollection<VoronoiPoint> implements Coll
     private static void updateComparator(AVLTree<VoronoiPoint> hull) {
         if (hull.isEmpty()) {
             hull.setComparator(new PolarAngleComparator());
-        }
-        else if (hull.size() == 1) {
+        } else if (hull.size() == 1) {
             hull.setComparator(new PolarAngleComparator(hull.get(0)));
-        }
-        else {
+        } else {
             hull.setComparator(new PolarAngleComparator(hull.get(0), hull.get(1)));
         }
     }
