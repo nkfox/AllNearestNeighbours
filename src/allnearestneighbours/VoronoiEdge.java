@@ -81,29 +81,6 @@ public class VoronoiEdge {
         }
     }
 
-    public boolean isLowerThan(VoronoiEdge edge) {
-        if (this.beginVertex.equals(edge.beginVertex)) {
-            if (Math.abs(this.beginVertex.x - this.endVertex.x) > Math.abs(edge.beginVertex.x - edge.endVertex.x)) {
-                Line line = new Line(beginVertex, endVertex, false);
-                double y = line.findY(edge.endVertex.x);
-                return y < edge.endVertex.y;
-            } else {
-                Line line = new Line(edge.beginVertex, edge.endVertex, false);
-                double y = line.findY(endVertex.x);
-                return y > endVertex.y;
-            }
-        }
-        if (Math.abs(this.beginVertex.x - this.endVertex.x) > Math.abs(edge.beginVertex.x - edge.endVertex.x)) {
-            Line line = new Line(beginVertex, endVertex, false);
-            double y = line.findY(edge.beginVertex.x);
-            return y < edge.beginVertex.y;
-        } else {
-            Line line = new Line(edge.beginVertex, edge.endVertex, false);
-            double y = line.findY(beginVertex.x);
-            return y > beginVertex.y;
-        }
-    }
-
     @Override
     public boolean equals(Object edge) {
         return edge instanceof VoronoiEdge && ((VoronoiEdge) edge).beginVertex.equals(beginVertex) && ((VoronoiEdge) edge).endVertex.equals(endVertex);

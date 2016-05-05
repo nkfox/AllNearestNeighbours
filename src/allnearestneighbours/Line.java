@@ -68,18 +68,12 @@ public class Line {
         double yLeft = findY(edge.beginVertex.x);
         double yRight = findY(edge.endVertex.x);
         double epsilon = 0.00001;
-        if (!endVertexIncluded && Math.abs(yRight - edge.endVertex.y) < epsilon ||
-                endVertexIncluded && Math.abs(yLeft - edge.beginVertex.y) < epsilon) return false;
-        return (edge.beginVertex.y - yLeft) * (edge.endVertex.y - yRight) <= 0 ||
-                Math.abs(yLeft - edge.beginVertex.y) < epsilon ||
-                endVertexIncluded && Math.abs(yRight - edge.endVertex.y) < epsilon ||
-                !endVertexIncluded && Math.abs(yLeft - edge.beginVertex.y) < epsilon;
-    }
-
-    public double distanceTo(Point point) {
-        double dist = Math.abs(d * point.x - b * point.y + c * b - a * d) / Math.sqrt(d * d + b * b);
-        System.out.println(dist);
-        return dist;
+        return !(!endVertexIncluded && Math.abs(yRight - edge.endVertex.y) < epsilon ||
+                endVertexIncluded && Math.abs(yLeft - edge.beginVertex.y) < epsilon) &&
+                ((edge.beginVertex.y - yLeft) * (edge.endVertex.y - yRight) <= 0 ||
+                        Math.abs(yLeft - edge.beginVertex.y) < epsilon ||
+                        endVertexIncluded && Math.abs(yRight - edge.endVertex.y) < epsilon ||
+                        !endVertexIncluded && Math.abs(yLeft - edge.beginVertex.y) < epsilon);
     }
 
     public boolean isLower(VoronoiPoint point) {
