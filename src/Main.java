@@ -87,16 +87,27 @@ public class Main {
     }
 
     public static double getNearestNeighboursVoronoi() {
-        long startTime = System.nanoTime();
-        Collections.sort(points);
-        //points.forEach(Point::print);
-        List<VoronoiPoint> voronoiPoints = points.stream().map(VoronoiPoint::new).collect(Collectors.toList());
-        voronoiDiagram = new VoronoiDiagram(voronoiPoints);
+        double duration = 0;
+        boolean done = false;
+        while (!done) {
+            try {
+                long startTime = System.nanoTime();
+                Collections.sort(points);
+                //points.forEach(Point::print);
+                List<VoronoiPoint> voronoiPoints = points.stream().map(VoronoiPoint::new).collect(Collectors.toList());
+                voronoiDiagram = new VoronoiDiagram(voronoiPoints);
+                done = true;
 
-        long endTime = System.nanoTime();
-        double duration = (endTime - startTime) / 1000000000.0;
-        System.out.println(duration + " seconds");
-        printNeighbours(voronoiDiagram);
+                long endTime = System.nanoTime();
+                duration = (endTime - startTime) / 1000000000.0;
+                System.out.println(duration + " seconds");
+                printNeighbours(voronoiDiagram);
+            } catch (Exception e) {
+                int n = points.size();
+                points.clear();
+                getRandomPoints(n);
+            }
+        }
         return duration;
     }
 

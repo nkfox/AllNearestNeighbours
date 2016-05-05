@@ -79,7 +79,9 @@ public class VoronoiDiagram {
 
         double currentY = PointsPanel.MAX;
 
+        int i = 0;
         do {
+            if (i++ > 500) throw new NullPointerException();
             setNearestNeighbours(currentLeftPoint, currentRightPoint);
 
             double leftY = getY(currentLeftEdge, currentLine);
@@ -306,7 +308,7 @@ public class VoronoiDiagram {
         VoronoiEdge currentEdge;
         if (edge == null) {
             currentEdge = lastIncluded.leftSide.firstEdge;
-            int i = 200;
+            int i = 500;
             while (i-- > 0 && currentEdge != null && !currentLine.intersects(currentEdge, includedEnd)) {
                 currentEdge = currentEdge.clockwise;
             }
@@ -318,7 +320,7 @@ public class VoronoiDiagram {
                     (lastRightIntersection == null || point != null && point.distanceTo(lastRightIntersection) > 0.001))
                 return currentEdge;
             currentEdge = currentEdge.clockwise;
-            i = 200;
+            i = 500;
             while (i-- > 0 && currentEdge != null && !currentLine.intersects(currentEdge, includedEnd)) {
                 currentEdge = currentEdge.clockwise;
             }
@@ -329,7 +331,7 @@ public class VoronoiDiagram {
             if (currentEdge != null && isBadEdge(currentEdge, currentLine, lastIncluded, lastLeftIntersection, lastRightIntersection))
                 currentEdge = null;
             else {
-                int i = 200;
+                int i = 500;
                 while (i-- > 0 && currentEdge != null && !currentLine.intersects(currentEdge, includedEnd)) {
                     currentEdge = currentEdge.clockwise;
                 }
@@ -340,7 +342,7 @@ public class VoronoiDiagram {
                 if (currentEdge != null && isBadEdge(currentEdge, currentLine, lastIncluded, lastLeftIntersection, lastRightIntersection))
                     currentEdge = null;
                 else {
-                    int i = 200;
+                    int i = 500;
                     while (i-- > 0 && currentEdge != null && !currentLine.intersects(currentEdge, includedEnd)) {
                         currentEdge = currentEdge.anticlockwise;
                     }
@@ -374,12 +376,13 @@ public class VoronoiDiagram {
                 if (current != null) {
                     page.setColor(new Color(0));
                     do {
-                        /*if (points.size()>=1000 && current.beginVertex.x<0 && current.endVertex.x > 30 || current.endVertex.x<0 && current.beginVertex.x > 30 ||
-                            current.beginVertex.x>PointsPanel.WIDTH && current.endVertex.x <PointsPanel.WIDTH-30
-                            || current.endVertex.x>PointsPanel.WIDTH && current.beginVertex.x <PointsPanel.WIDTH-30) k++;
-                    else*/
-                        page.drawLine((int) current.beginVertex.x, PointsPanel.HEIGHT - (int) current.beginVertex.y,
-                                (int) current.endVertex.x, PointsPanel.HEIGHT - (int) current.endVertex.y);
+                        if (points.size() >= 1000 && current.beginVertex.x < 0 && current.endVertex.x > 30 || current.endVertex.x < 0 && current.beginVertex.x > 30 ||
+                                current.beginVertex.x > PointsPanel.WIDTH && current.endVertex.x < PointsPanel.WIDTH - 30
+                                || current.endVertex.x > PointsPanel.WIDTH && current.beginVertex.x < PointsPanel.WIDTH - 30)
+                            k++;
+                        else
+                            page.drawLine((int) current.beginVertex.x, PointsPanel.HEIGHT - (int) current.beginVertex.y,
+                                    (int) current.endVertex.x, PointsPanel.HEIGHT - (int) current.endVertex.y);
                         current = current.clockwise;
                     } while (current != null && !current.equals(point.firstEdge) && i-- > 0);
                 }
