@@ -55,15 +55,16 @@ public class PointsPanel extends JPanel {
 
     private void printConvexHull(Graphics page) {
         VoronoiPoint first = null, prev = null;
-        for(VoronoiPoint point: diagram.convexHull) {
-            if (first == null ) first = point;
-            if (prev!=null)
-            page.drawLine((int) point.x, HEIGHT - (int) point.y,
-                    (int) prev.x, HEIGHT - (int) prev.y);
+        for (VoronoiPoint point : diagram.convexHull) {
+            if (first == null) first = point;
+            if (prev != null)
+                page.drawLine((int) point.x, HEIGHT - (int) point.y,
+                        (int) prev.x, HEIGHT - (int) prev.y);
             prev = point;
         }
-        page.drawLine((int) first.x, HEIGHT - (int) first.y,
-                (int) prev.x, HEIGHT - (int) prev.y);
+        if (first != null)
+            page.drawLine((int) first.x, HEIGHT - (int) first.y,
+                    (int) prev.x, HEIGHT - (int) prev.y);
 
     }
 }

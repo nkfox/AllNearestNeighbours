@@ -1,8 +1,6 @@
 package avltree;
 
 
-import allnearestneighbours.VoronoiPoint;
-
 import java.util.*;
 
 import static avltree.AVLNode.balance;

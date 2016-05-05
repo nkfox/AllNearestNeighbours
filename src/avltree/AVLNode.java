@@ -77,21 +77,21 @@ public class AVLNode<T> {
         return parent != null && son == parent.right;
     }
 
-    public static <T> void replaceSon(AVLNode<T> parent, AVLNode<T> son, AVLNode<T> repl) {
+    public static <T> void replaceSon(AVLNode<T> parent, AVLNode<T> son, AVLNode<T> replace) {
         if (son == null) {
             return;
         }
 
         if (parent == null) {
-            repl.parent = null;
+            replace.parent = null;
         }
 
         if (AVLNode.isLeftSon(parent, son)) {
-            AVLNode.setLeft(parent, repl);
+            AVLNode.setLeft(parent, replace);
         }
 
         if (AVLNode.isRightSon(parent, son)) {
-            AVLNode.setRight(parent, repl);
+            AVLNode.setRight(parent, replace);
         }
     }
 
