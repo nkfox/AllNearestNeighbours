@@ -2,7 +2,6 @@ package allnearestneighbours;
 
 import avltree.AVLNode;
 import avltree.AVLTree;
-import avltree.ComparableComparator;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -45,7 +44,7 @@ public class VoronoiDiagram {
         VoronoiPoint begin = left.points.get(0);
         VoronoiPoint end = right.points.get(0);
         convexHull = AVLTree.join(left.convexHull, right.convexHull);
-        convexHull.setComparator(new ComparableComparator<>(begin, end));
+        convexHull.setComparator(new PolarAngleComparator(begin, end));
         VoronoiEdge edge = VoronoiEdge.getPerpendicularEdge(begin, end);
         if (edge.leftSide.equals(end))
             edge = edge.reverse;
@@ -145,7 +144,7 @@ public class VoronoiDiagram {
         if (right.convexHull.size() != 1)
             right.convexHull.retainSegment(lowerSupportRight,upperSupportRight);
         convexHull = AVLTree.join(left.convexHull, right.convexHull);
-        convexHull.setComparator(new ComparableComparator<>(convexHull.get(0),convexHull.get(1)));
+        convexHull.setComparator(new PolarAngleComparator(convexHull.get(0),convexHull.get(1)));
     }
 
     /*private List<VoronoiEdge> findConvexHull(VoronoiDiagram left, VoronoiDiagram right) {

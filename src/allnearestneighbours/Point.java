@@ -79,6 +79,11 @@ public class Point implements Comparable {
     }
 
     @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
+
+    @Override
     public boolean equals(Object point) {
         double epsilon = 0.00001;
         return point instanceof Point && Math.abs(x - ((Point) point).x) < epsilon && Math.abs(y - ((Point) point).y) < epsilon;

@@ -82,7 +82,7 @@ public class AVLNode<T> {
             return;
         }
 
-        if (parent == null) {
+        if (parent == null && repl != null) {
             repl.parent = null;
         }
 
