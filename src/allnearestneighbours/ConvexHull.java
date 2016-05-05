@@ -11,7 +11,7 @@ public class ConvexHull extends AbstractCollection<VoronoiPoint> implements Coll
     AVLTree<VoronoiPoint> upperHull;
     AVLTree<VoronoiPoint> hull;
 
-    public ConvexHull() {
+    private ConvexHull() {
         lowerHull = new AVLTree<>(new ComparableComparator<>());
         upperHull = new AVLTree<>(new ComparableComparator<>().reversed());
         hull = new AVLTree<>();

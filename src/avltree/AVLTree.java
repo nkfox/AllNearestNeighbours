@@ -104,7 +104,10 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
         }
 
         if (comparator.compare(min, max) > 0) {
-            retainInterval(max, min, !maxOpen, !minOpen);
+            List<AVLNode<E>> maxList = split(head, max, !maxOpen);
+            head = maxList.get(1);
+            List<AVLNode<E>> minList = split(head, min, minOpen);
+            head = minList.get(0);
             return;
         }
 
