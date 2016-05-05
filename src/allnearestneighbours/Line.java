@@ -23,6 +23,10 @@ public class Line {
         }
     }
 
+    public Line(Point p1, Point p2) {
+        this(p1, p2, false);
+    }
+
     public Line(Point p1, Point p2, boolean isPerpendicular) {
         this(p1.x, p1.y, p2.x, p2.y);
         if (isPerpendicular) {
@@ -75,4 +79,6 @@ public class Line {
     public boolean isLower(VoronoiPoint point) {
         return findY(point.x) - point.y < 0;
     }
+
+    public boolean isHigher(VoronoiPoint point) { return findY(point.x) - point.y > 0; }
 }

@@ -61,14 +61,14 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
 
     public static <E> AVLTree<E> join(AVLTree<E> left, AVLTree<E> right) {
         if (left == null) {
-            return right;
+            return right != null ? right : new AVLTree<>();
         }
 
         if (right == null) {
             return left;
         }
 
-        return new AVLTree<>(AVLNode.join(left.head, right.head));
+        return new AVLTree<>(AVLNode.join(left.head, right.head), left.getComparator());
     }
 
     public void retainInterval(E min, E max, boolean minOpen, boolean maxOpen) {
@@ -104,7 +104,10 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
         }
 
         if (comparator.compare(min, max) > 0) {
-            retainInterval(max, min, !maxOpen, !minOpen);
+            List<AVLNode<E>> maxList = split(head, max, !maxOpen);
+            head = maxList.get(1);
+            List<AVLNode<E>> minList = split(head, min, minOpen);
+            head = minList.get(0);
             return;
         }
 
@@ -137,7 +140,8 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
             @SuppressWarnings("unchecked")
             E e = (E) o;
             return find(head, e) != null;
-        } catch (ClassCastException e) {
+        }
+        catch (ClassCastException e) {
             return false;
         }
     }
@@ -154,7 +158,8 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
             int prevSize = this.size();
             head = remove(head, e);
             return prevSize != this.size();
-        } catch (ClassCastException e) {
+        }
+        catch (ClassCastException e) {
             return false;
         }
     }
@@ -182,13 +187,15 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
         if (comparator.compare(value, p.value) < 0) {
             if (p.left != null) {
                 p.left = insert(p.left, value);
-            } else {
+            }
+            else {
                 AVLNode.setLeft(p, new AVLNode<>(value, null, null, p.prev, p));
             }
         } else {
             if (p.right != null) {
                 p.right = insert(p.right, value);
-            } else {
+            }
+            else {
                 AVLNode.setRight(p, new AVLNode<>(value, null, null, p, p.next));
             }
         }
@@ -204,7 +211,8 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
         int cmp = comparator.compare(value, p.value);
         if (cmp < 0) {
             return find(p.left, value);
-        } else if (cmp > 0) {
+        }
+        else if (cmp > 0) {
             return find(p.right, value);
         }
 
@@ -260,16 +268,19 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
             if (cmp < 0 || cmp == 0 && !valueLeft) {
                 if (right == null) {
                     node.parent = null;
-                } else {
+                }
+                else {
                     AVLNode.setLeft(right, node);
                 }
 
                 right = node;
                 node = node.left;
-            } else {
+            }
+            else {
                 if (left == null) {
                     node.parent = null;
-                } else {
+                }
+                else {
                     AVLNode.setRight(left, node);
                 }
 
@@ -278,13 +289,8 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
             }
         }
 
-        if (left != null) {
-            AVLNode.setNext(left, min);
-        }
-
-        if (right != null) {
-            AVLNode.setNext(max, right);
-        }
+        AVLNode.setNext(left, min);
+        AVLNode.setPrev(right, max);
 
         AVLNode.setRight(left, null);
         AVLNode.setLeft(right, null);
@@ -328,7 +334,8 @@ public class AVLTree<E> extends AbstractCollection<E> implements Collection<E> {
 
             if (next != null) {
                 head = AVLTree.this.remove(head, next.prev.value);
-            } else {
+            }
+            else {
                 head = null;
             }
 
